@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crane Summary - Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+    :root{--green:#16a34a;--green-d:#15803d;--red:#dc2626;--red-d:#b91c1c;--blue:#1d4ed8;--navy:#0f274a;--amber:#f5a61d}
+    body{background:#f4f6f9;color:#1e293b;padding:35px 50px;min-height:100vh}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
+    .top h1{font-size:1.85rem;font-weight:800;color:#0f172a}
+    .top p{color:#64748b;font-size:.9rem;margin-top:4px}
+    .back{border:1px solid #cbd5e1;background:#fff;color:#0f274a;font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;white-space:nowrap}
+    .back:hover{border-color:var(--navy)}
+    h2.sec{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.5px;border-left:4px solid var(--amber);padding-left:10px;margin:28px 0 14px}
+    .sec-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:28px 0 14px}
+    .sec-row h2.sec{margin:0}
+    .year-pick{display:flex;align-items:center;gap:8px;font-size:.72rem;font-weight:800;color:#64748b;text-transform:uppercase}
+    .year-pick select{border:1px solid #cbd5e1;border-radius:6px;padding:8px 10px;background:#fff;color:#1e293b;font-weight:700;outline:none}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+    .card h3{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#334155;margin-bottom:14px}
+    .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .grid-mt{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;align-items:start}
+    .stat small{display:block;font-size:.68rem;font-weight:800;text-transform:uppercase;color:#64748b}
+    .stat b{display:block;font-size:2rem;font-weight:800;margin-top:6px;color:var(--navy)}
+    .stat .pct{font-size:.72rem;font-weight:700;color:#94a3b8;margin-top:2px}
+    .stat .bar{height:6px;background:#e2e8f0;border-radius:99px;margin-top:10px;overflow:hidden}
+    .stat .bar i{display:block;height:100%;border-radius:99px}
+    .stat.total{border-left:5px solid var(--navy)}
+    .stat.active{border-left:5px solid var(--green)} .stat.active b{color:var(--green-d)} .stat.active .bar i{background:var(--green)}
+    .stat.maint{border-left:5px solid var(--amber)} .stat.maint b{color:#b45309} .stat.maint .bar i{background:var(--amber)}
+    .stat.inactive{border-left:5px solid var(--red)} .stat.inactive b{color:var(--red-d)} .stat.inactive .bar i{background:var(--red)}
+    .fin-card.rev{border-left:5px solid var(--green)} .fin-card.rev b{color:var(--green-d)}
+    .fin-card.exp{border-left:5px solid var(--red)} .fin-card.exp b{color:var(--red-d)}
+    .fin-card.net{border-left:5px solid var(--blue)} .fin-card.net b{color:var(--blue)}
+    .fin-card small{display:block;font-size:.68rem;font-weight:800;text-transform:uppercase;color:#64748b}
+    .fin-card b{display:block;font-size:1.45rem;font-weight:800;margin-top:6px}
+    table{width:100%;border-collapse:collapse}
+    th{font-size:.64rem;color:#64748b;text-transform:uppercase;text-align:left;padding:9px 8px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+    td{padding:10px 8px;border-bottom:1px solid #f1f5f9;font-size:.78rem;vertical-align:top}
+    td.num,th.num{text-align:right;white-space:nowrap}
+    .tbl-wrap{overflow-x:auto}
+    a.crane-link{color:var(--navy);font-weight:700;text-decoration:none}
+    a.crane-link:hover{text-decoration:underline}
+    .muted{color:#94a3b8;font-size:.72rem}
+    .empty{text-align:center;color:#94a3b8;padding:22px 8px;font-size:.8rem}
+    .alert-total{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+    .alert-total .big{font-size:2.6rem;font-weight:800;line-height:1;color:var(--navy)}
+    .alert-total .big.has{color:var(--red-d)}
+    .alert-total .lbl{font-size:.72rem;font-weight:800;text-transform:uppercase;color:#64748b}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .chip{font-size:.7rem;font-weight:800;padding:5px 10px;border-radius:99px}
+    .chip.expired{background:#fee2e2;color:var(--red-d)}
+    .chip.soon{background:#fef3c7;color:#b45309}
+    .alert-list{list-style:none;max-height:260px;overflow-y:auto}
+    .alert-list li{padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.76rem}
+    .alert-list li:last-child{border-bottom:0}
+    .alert-list .row1{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+    .badge{font-size:.62rem;font-weight:800;padding:3px 8px;border-radius:99px;white-space:nowrap}
+    .badge.expired{background:#fee2e2;color:var(--red-d)}
+    .badge.soon{background:#fef3c7;color:#b45309}
+    .rank{list-style:none}
+    .rank li{display:grid;grid-template-columns:26px 1fr auto;gap:4px 10px;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9}
+    .rank li:last-child{border-bottom:0}
+    .rank .pos{width:24px;height:24px;border-radius:50%;background:#f1f5f9;color:#475569;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;grid-row:span 2}
+    .rank li:first-child .pos{background:var(--amber);color:#fff}
+    .rank .name{font-size:.78rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .rank .val{font-size:.8rem;font-weight:800;white-space:nowrap}
+    .rank .track{grid-column:2 / span 2;height:7px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+    .rank .track i{display:block;height:100%;border-radius:99px}
+    .rank.rev .val{color:var(--green-d)} .rank.rev .track i{background:var(--green)}
+    .rank.exp .val{color:var(--red-d)} .rank.exp .track i{background:var(--red)}
+    .rank.net .val{color:var(--blue)} .rank.net .track i{background:var(--blue)}
+    .rank.net .track i.neg{opacity:.4}
+    .rank.mt .val{color:#b45309} .rank.mt .track i{background:var(--amber)}
+    .card.rev-c{border-top:4px solid var(--green)}
+    .card.exp-c{border-top:4px solid var(--red)}
+    .card.net-c{border-top:4px solid var(--blue)}
+    .card.mt-c{border-top:4px solid var(--amber)}
+    .loading{padding:40px;text-align:center;color:#64748b}
+    @media(max-width:1000px){.grid-mt,.grid2{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:650px){body{padding:20px 14px}.grid4,.grid3{grid-template-columns:1fr}.top{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div><h1>Crane Summary</h1><p>Fleet overview, maintenance, certificate alerts and business performance</p></div>
+    <button class="back" onclick="location.href='/dashboard.html'">← Back to Dashboard</button>
+  </div>
+  <div id="content" class="loading">Loading summary...</div>
+
+<script>
+let selectedYear = 'all';
+
+function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function money(n){return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP';}
+function signedMoney(n){return (n<0?'-':'')+money(Math.abs(n));}
+function formatDate(d){if(!d) return '-';return new Date(d+'T00:00:00').toLocaleDateString('en-GB');}
+function craneName(c){return escapeHtml(c.model_name)+' <span class="muted">('+escapeHtml(c.serial_number)+')</span>';}
+function craneLink(id,c){return '<a class="crane-link" href="/crane-details.html?id='+encodeURIComponent(id)+'">'+craneName(c)+'</a>';}
+function pct(n,total){return total?Math.round(n/total*100):0;}
+
+async function load(){
+  const box=document.getElementById('content');
+  try{
+    const res=await fetch('/api/summary?year='+encodeURIComponent(selectedYear));
+    const data=await res.json();
+    if(!res.ok||!data.success) throw new Error(data.message||'Failed to load summary');
+    render(data);
+  }catch(e){box.className='loading'; box.innerHTML=escapeHtml(e.message);}
+}
+
+function statCard(cls,label,n,total){
+  const p=pct(n,total);
+  return `<div class="card stat ${cls}"><small>${label}</small><b>${n}</b>${cls==='total'?'<div class="pct">All registered cranes</div>':`<div class="pct">${p}% of fleet</div><div class="bar"><i style="width:${p}%"></i></div>`}</div>`;
+}
+
+function recentMaintenanceCard(rows){
+  const body=rows.length
+    ? rows.map(r=>`<tr><td>${formatDate(r.maintenance_date)}</td><td>${craneLink(r.crane_id,r)}</td><td>${escapeHtml(r.problem_cause)}</td><td>${escapeHtml(r.repaired_by)}</td><td class="num">${money(r.cost_egp)}</td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty">No maintenance records yet.</td></tr>';
+  return `<div class="card"><h3>Recent Maintenance</h3><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Crane</th><th>Problem</th><th>Repaired by</th><th class="num">Cost</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+}
+
+function alertsCard(a){
+  const list=a.items.length
+    ? a.items.map(x=>{
+        const expired=x.days_left<0;
+        const txt=expired?`Expired ${Math.abs(x.days_left)} day${Math.abs(x.days_left)===1?'':'s'} ago`:x.days_left===0?'Expires today':`${x.days_left} day${x.days_left===1?'':'s'} left`;
+        return `<li><div class="row1"><span>${escapeHtml(x.certificate_name)}</span><span class="badge ${expired?'expired':'soon'}">${expired?'Expired':'Expire soon'}</span></div><div class="muted">${craneLink(x.crane_id,x)} · ${formatDate(x.expire_date)} · ${txt}</div></li>`;
+      }).join('')
+    : '<li class="empty">No certificate alerts. All certificates are valid ✅</li>';
+  return `<div class="card"><h3>Certificate Alerts</h3>
+    <div class="alert-total"><div class="big ${a.total?'has':''}">${a.total}</div><div class="lbl">Total alerts</div></div>
+    <div class="chips"><span class="chip expired">⛔ ${a.expired} expired</span><span class="chip soon">⚠️ ${a.soon} expire within 1 month</span></div>
+    <ul class="alert-list">${list}</ul></div>`;
+}
+
+function rankList(cranes,key,cls,fmt,title,cardCls,opts={}){
+  const sorted=[...cranes].sort((a,b)=>b[key]-a[key]).slice(0,5);
+  const max=Math.max(...sorted.map(c=>Math.abs(c[key])),0);
+  const items=sorted.length && (max>0)
+    ? sorted.map((c,i)=>{
+        const w=max?Math.round(Math.abs(c[key])/max*100):0;
+        return `<li><span class="pos">${i+1}</span><span class="name">${craneLink(c.id,c)}</span><span class="val">${fmt(c)}</span><div class="track"><i class="${c[key]<0?'neg':''}" style="width:${w}%"></i></div></li>`;
+      }).join('')
+    : `<li style="display:block" class="empty">${opts.empty||'No data yet.'}</li>`;
+  return `<div class="card ${cardCls}"><h3>${title}</h3><ul class="rank ${cls}">${items}</ul></div>`;
+}
+
+function render(d){
+  const box=document.getElementById('content'); box.className='';
+  const f=d.fleet, fin=d.finance;
+  const years=d.years.map(y=>`<option value="${y}" ${String(d.year)===String(y)?'selected':''}>${y}</option>`).join('');
+  const period=d.year?('Year '+d.year):'All time';
+
+  box.innerHTML=`
+    <h2 class="sec" style="margin-top:0">Fleet Overview</h2>
+    <div class="grid4">
+      ${statCard('total','Total Cranes',f.total,f.total)}
+      ${statCard('active','Active',f.active,f.total)}
+      ${statCard('maint','Under Maintenance',f.maintenance,f.total)}
+      ${statCard('inactive','Inactive',f.inactive,f.total)}
+    </div>
+
+    <h2 class="sec">Maintenance & Certificates</h2>
+    <div class="grid-mt">
+      ${recentMaintenanceCard(d.recent_maintenance)}
+      ${alertsCard(d.certificate_alerts)}
+    </div>
+
+    <div class="sec-row">
+      <h2 class="sec">Business Dashboard <span class="muted" style="text-transform:none">· ${period} · all cranes</span></h2>
+      <label class="year-pick">Period
+        <select id="yearSel" onchange="changeYear(this.value)"><option value="all" ${d.year?'':'selected'}>All time</option>${years}</select>
+      </label>
+    </div>
+    <div class="grid3">
+      <div class="card fin-card rev"><small>Total Revenue</small><b>${money(fin.revenue)}</b></div>
+      <div class="card fin-card exp"><small>Total Expenses</small><b>${money(fin.expenses)}</b></div>
+      <div class="card fin-card net"><small>Net Profit</small><b>${signedMoney(fin.net)}</b></div>
+    </div>
+
+    <h2 class="sec">Top Cranes Ranking <span class="muted" style="text-transform:none">· ${period}</span></h2>
+    <div class="grid3">
+      ${rankList(d.cranes,'revenue','rev',c=>money(c.revenue),'🏆 Top Revenue','rev-c',{empty:'No revenue recorded yet.'})}
+      ${rankList(d.cranes,'expenses','exp',c=>money(c.expenses),'Top Expenses','exp-c',{empty:'No expenses recorded yet.'})}
+      ${rankList(d.cranes,'net','net',c=>signedMoney(c.net),'Top Net Profit','net-c',{empty:'No finance data yet.'})}
+    </div>
+
+    <h2 class="sec">Most Cranes in Maintenance</h2>
+    <div class="grid2">
+      ${rankList(d.cranes.filter(c=>c.maintenance_count>0),'maintenance_count','mt',c=>c.maintenance_count+' record'+(c.maintenance_count===1?'':'s')+' · '+money(c.maintenance_cost),'Maintenance Ranking (all time)','mt-c',{empty:'No maintenance records yet.'})}
+      <div class="card mt-c"><h3>Currently Under Maintenance</h3>${currentMaintenance(d.cranes)}</div>
+    </div>`;
+}
+
+function currentMaintenance(cranes){
+  const list=cranes.filter(c=>c.status==='Under Maintenance');
+  if(!list.length) return '<div class="empty">No crane is under maintenance right now.</div>';
+  return '<ul class="rank mt">'+list.map((c,i)=>`<li><span class="pos">${i+1}</span><span class="name">${craneLink(c.id,c)}</span><span class="val">${c.maintenance_count} record${c.maintenance_count===1?'':'s'}</span><div class="track"><i style="width:100%"></i></div></li>`).join('')+'</ul>';
+}
+
+function changeYear(v){selectedYear=v; load();}
+load();
+</script>
+</body>
+</html>

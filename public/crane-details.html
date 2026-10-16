@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crane Details</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
+    body{margin:0;background:#f4f6f9;color:#1e293b;min-height:100vh;padding:30px 48px}
+    .page{max-width:1250px;margin:auto}
+    .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+    .back{border:0;background:#0f274a;color:#fff;border-radius:7px;padding:10px 16px;font-weight:700;cursor:pointer}
+    .title h1{margin:0;color:#0f172a;font-size:1.75rem;font-weight:800}.title p{margin:5px 0 0;color:#64748b;font-size:.82rem}
+    .hero{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;display:grid;grid-template-columns:180px 1fr 280px;gap:25px;box-shadow:0 2px 8px rgba(0,0,0,.05);align-items:center}
+    .crane-image{width:180px;height:180px;border-radius:10px;background:#e9eef4;border:1px solid #dbe3ec;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#94a3b8;font-weight:700;text-align:center}
+    .crane-image img{width:100%;height:100%;object-fit:cover}.identity h2{margin:0;font-size:1.65rem;color:#0f172a;font-weight:800}.identity .serial{margin-top:7px;color:#64748b;font-size:.85rem;font-weight:500}
+    .meta{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}.meta-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 13px;min-width:150px}.meta-item small{display:block;color:#94a3b8;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}.meta-item strong{font-size:.84rem;color:#334155}
+    .edit-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px}.edit-box h3{margin:0 0 13px;font-size:.9rem;color:#0f172a}.field{margin-bottom:10px}.field label{display:block;font-size:.68rem;font-weight:800;color:#64748b;text-transform:uppercase;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:9px 10px;background:#fff;color:#1e293b;outline:none}.field textarea{min-height:130px;resize:vertical}.save{width:100%;border:0;background:#f5a61d;color:#0f172a;padding:10px;border-radius:6px;font-weight:800;cursor:pointer}.save:hover{background:#e09414}
+    .sections{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}.section.full{grid-column:1/-1}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.section h2{margin:0;font-size:1rem;color:#0f172a;font-weight:800}.section-sub{font-size:.7rem;color:#94a3b8}
+    .details-text{width:100%;min-height:170px;border:1px solid #cbd5e1;border-radius:7px;padding:12px;resize:vertical;outline:none;color:#334155;font-size:.82rem;line-height:1.6}.details-actions{text-align:right;margin-top:9px}
+    .cert-form{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:16px}.cert-form input{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:9px 10px}.cert-form label{display:block;font-size:.65rem;font-weight:800;color:#64748b;text-transform:uppercase;margin-bottom:5px}.add-cert{border:0;background:#0f274a;color:#fff;padding:10px 15px;border-radius:6px;font-weight:700;cursor:pointer}
+    .cert-table{width:100%;border-collapse:collapse}.cert-table th{font-size:.68rem;color:#64748b;text-transform:uppercase;text-align:left;padding:10px;border-bottom:1px solid #e2e8f0}.cert-table td{padding:12px 10px;border-bottom:1px solid #f1f5f9;font-size:.78rem}.days{font-weight:800}.ok{color:#16a34a}.warning{color:#d97706}.expired{color:#dc2626}.delete{border:0;background:#fee2e2;color:#dc2626;padding:5px 9px;border-radius:5px;cursor:pointer;font-weight:700}.empty{text-align:center;color:#94a3b8;padding:20px}
+    .mt-form{display:grid;grid-template-columns:140px 1.3fr 1fr 1.1fr 110px 1.1fr auto;gap:10px;align-items:end;margin-bottom:16px}.mt-form label{display:block;font-size:.65rem;font-weight:800;color:#64748b;text-transform:uppercase;margin-bottom:5px}.mt-form input[type=file]{padding:6px 8px;font-size:.72rem}.mt-form input{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:9px 10px;background:#fff;color:#1e293b;outline:none}
+    .mt-wrap{overflow-x:auto}.mt-table{width:100%;border-collapse:collapse;min-width:760px}.mt-table th{font-size:.66rem;color:#64748b;text-transform:uppercase;text-align:left;padding:10px 8px;border-bottom:1px solid #e2e8f0}.mt-table td{padding:11px 8px;border-bottom:1px solid #f1f5f9;font-size:.78rem;vertical-align:top}.mt-total{display:flex;justify-content:flex-end;margin-top:12px;font-size:.82rem;color:#334155}.mt-total strong{margin-left:8px;color:#0f172a}
+    .inv-link{display:inline-block;background:#e0ecff;color:#0f274a;text-decoration:none;font-weight:700;padding:5px 9px;border-radius:5px;font-size:.72rem;margin-right:4px}.inv-btn{border:0;background:#f1f5f9;color:#334155;padding:5px 9px;border-radius:5px;cursor:pointer;font-weight:700;font-size:.72rem;margin-right:4px}.old-notes{margin-top:16px;padding:12px;border:1px dashed #cbd5e1;border-radius:8px;background:#f8fafc}.old-notes summary{cursor:pointer;font-size:.75rem;font-weight:800;color:#64748b}.old-notes pre{white-space:pre-wrap;margin:10px 0 0;font-size:.78rem;color:#475569;line-height:1.6}
+    .fin-year{display:flex;align-items:center;gap:18px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 18px;margin-bottom:16px}.fin-year .yr{font-size:1.9rem;font-weight:800;color:#0f274a;min-width:90px}.fin-slider{flex:1}.fin-slider input{width:100%;accent-color:#0f274a;cursor:pointer}.fin-slider .ends{display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;color:#94a3b8;margin-top:2px}
+    .fin-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}.fin-card{border-radius:10px;padding:15px 18px;border:1px solid #e2e8f0;background:#fff}.fin-card small{display:block;font-size:.66rem;font-weight:800;text-transform:uppercase;color:#64748b}.fin-card b{display:block;margin-top:6px;font-size:1.35rem;font-weight:800}.fin-card.rev{border-left:5px solid #16a34a}.fin-card.rev b{color:#15803d}.fin-card.exp{border-left:5px solid #dc2626}.fin-card.exp b{color:#b91c1c}.fin-card.net{border-left:5px solid #0f274a}.fin-card.net b.neg{color:#b91c1c}.fin-card.net b.pos{color:#15803d}
+    .fin-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}.fin-box{border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}.fin-box-head{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;color:#fff;font-weight:800;font-size:.85rem}.fin-box.rev .fin-box-head{background:#16a34a}.fin-box.exp .fin-box-head{background:#dc2626}.fin-add{border:0;background:#fff;border-radius:6px;padding:7px 12px;font-weight:800;font-size:.74rem;cursor:pointer}.fin-box.rev .fin-add{color:#15803d}.fin-box.exp .fin-add{color:#b91c1c}
+    .fin-table{width:100%;border-collapse:collapse}.fin-table th{font-size:.64rem;color:#64748b;text-transform:uppercase;text-align:left;padding:9px 12px;background:#f8fafc;border-bottom:1px solid #e2e8f0}.fin-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:.78rem}.fin-table .num{text-align:right;white-space:nowrap}.fin-month{cursor:pointer;font-weight:700}.fin-month:hover{background:#f8fafc}.fin-month.empty{color:#94a3b8;cursor:default;font-weight:500}.fin-month .arrow{display:inline-block;width:14px;color:#94a3b8;font-size:.7rem}.fin-box.rev .fin-month .amt{color:#15803d}.fin-box.exp .fin-month .amt{color:#b91c1c}.fin-day td{background:#fafbfc;color:#475569;font-size:.74rem}.fin-day td:first-child{padding-left:34px}.fin-del{border:0;background:#fee2e2;color:#b91c1c;border-radius:5px;padding:4px 8px;cursor:pointer;font-weight:700;font-size:.68rem}
+    .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}.modal-bg.open{display:flex}.modal{background:#fff;border-radius:12px;padding:22px;width:100%;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,.3)}.modal h3{margin:0 0 14px;font-size:1.05rem}.modal.rev h3{color:#15803d}.modal.exp h3{color:#b91c1c}.modal .row{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:10px}.modal label{display:block;font-size:.65rem;font-weight:800;color:#64748b;text-transform:uppercase;margin:10px 0 5px}.modal input,.modal select{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:9px 10px;background:#fff;color:#1e293b;outline:none}.modal .btns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.modal .btns button{border:0;border-radius:7px;padding:9px 16px;font-weight:800;cursor:pointer}.modal .btn-cancel{background:#f1f5f9;color:#334155}.modal.rev .btn-ok{background:#16a34a;color:#fff}.modal.exp .btn-ok{background:#dc2626;color:#fff}
+    .cert-form{grid-template-columns:1.3fr 1fr 1fr 1.1fr auto!important}.cert-form input[type=file]{padding:6px 8px;font-size:.72rem}.cert-wrap{overflow-x:auto}.cert-table{min-width:820px}
+    .badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;white-space:nowrap}.badge.valid{background:#dcfce7;color:#15803d}.badge.soon{background:#fef3c7;color:#b45309}.badge.expired{background:#fee2e2;color:#b91c1c}
+    .cert-alert{border-radius:10px;padding:13px 16px;margin-bottom:16px;font-size:.82rem;line-height:1.6;border:1px solid}.cert-alert.expired{background:#fef2f2;border-color:#fecaca;color:#991b1b}.cert-alert.soon{background:#fffbeb;border-color:#fde68a;color:#92400e}.cert-alert strong{display:block;font-size:.88rem;margin-bottom:3px}.cert-alert ul{margin:4px 0 0;padding-left:20px}
+    .loading{text-align:center;padding:60px;color:#64748b}
+    @media(max-width:900px){.cert-form{grid-template-columns:1fr 1fr!important}.fin-cols{grid-template-columns:1fr}.fin-cards{grid-template-columns:1fr}.mt-form{grid-template-columns:1fr 1fr}.mt-form .add-cert{width:100%}body{padding:20px}.hero{grid-template-columns:130px 1fr}.crane-image{width:130px;height:130px}.edit-box{grid-column:1/-1}.sections{grid-template-columns:1fr}.section.full{grid-column:auto}.cert-form{grid-template-columns:1fr 1fr}.add-cert{width:100%}}
+    @media(max-width:600px){.cert-form{grid-template-columns:1fr!important}.mt-form{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.crane-image{width:150px;height:150px}.cert-form{grid-template-columns:1fr}.top{align-items:flex-start;gap:10px}.top .title{order:2}.top .back{order:1}}
+  </style>
+</head>
+<body>
+<div class="page" id="page">
+  <div class="top">
+    <div class="title"><h1>Crane Details</h1><p>Crane profile, status, maintenance, finance and certificates</p></div>
+    <button class="back" onclick="location.href='/cranes.html'">← Back to Cranes</button>
+  </div>
+  <div id="content" class="loading">Loading crane...</div>
+</div>
+<script>
+const id = new URLSearchParams(location.search).get('id');
+let craneId = id;
+let currentData = null;
+let financeYear = Math.min(2040, Math.max(2008, new Date().getFullYear()));
+
+function escapeHtml(value='') { return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function statusClass(status){return status==='Active'?'ok':status==='Under Maintenance'?'warning':'expired';}
+function daysLeft(date){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(date+'T00:00:00');
+  return Math.ceil((d-today)/86400000);
+}
+function remainingText(date){
+  const days=daysLeft(date);
+  if(days<0) return `<span class="days expired">Expired ${Math.abs(days)} day${Math.abs(days)===1?'':'s'} ago</span>`;
+  if(days===0) return `<span class="days expired">Expires today</span>`;
+  if(days<=30) return `<span class="days warning">${days} day${days===1?'':'s'} remaining</span>`;
+  return `<span class="days ok">${days} days remaining</span>`;
+}
+function formatDate(d){ if(!d) return '-'; return new Date(d+'T00:00:00').toLocaleDateString('en-GB'); }
+
+async function load(){
+  if(!craneId){document.getElementById('content').innerHTML='<div class="loading">No crane selected.</div>';return;}
+  try{
+    const res=await fetch('/api/cranes/'+encodeURIComponent(craneId));
+    const data=await res.json();
+    if(!res.ok || !data.success) throw new Error(data.message||'Failed to load crane');
+    currentData=data;
+    render(data);
+  }catch(e){document.getElementById('content').innerHTML='<div class="loading">'+escapeHtml(e.message)+'</div>';}
+}
+
+function render(data){
+  const c=data.crane;
+  const image=c.image_data ? `<img src="${escapeHtml(c.image_data)}" alt="Crane image">` : '<span>Crane image<br>not uploaded</span>';
+  const sc=statusClass(c.status);
+  document.getElementById('content').innerHTML=`
+    <div id="certAlert"></div>
+    <div class="hero">
+      <div class="crane-image">${image}</div>
+      <div class="identity">
+        <h2>${escapeHtml(c.model_name)}</h2>
+        <div class="serial">Serial Number: ${escapeHtml(c.serial_number)}</div>
+        <div class="meta">
+          <div class="meta-item"><small>Current Location</small><strong>${escapeHtml(c.current_location||'-')}</strong></div>
+          <div class="meta-item"><small>Status</small><strong class="${sc}">${escapeHtml(c.status||'-')}</strong></div>
+          <div class="meta-item"><small>Base Location</small><strong>${escapeHtml(c.location||'-')}</strong></div>
+          <div class="meta-item"><small>Crane Operator</small><strong>${escapeHtml(c.operator_name||'-')}</strong></div>
+          <div class="meta-item"><small>Helper</small><strong>${escapeHtml(c.helper_name||'-')}</strong></div>
+        </div>
+      </div>
+      <div class="edit-box">
+        <h3>Update Crane</h3>
+        <div class="field"><label>Current Location</label><input id="currentLocation" value="${escapeHtml(c.current_location||'')}"></div>
+        <div class="field"><label>Status</label><select id="craneStatus"><option ${c.status==='Active'?'selected':''}>Active</option><option ${c.status==='Under Maintenance'?'selected':''}>Under Maintenance</option><option ${c.status==='Inactive'?'selected':''}>Inactive</option></select></div>
+        <div class="field"><label>Crane Operator</label><input id="operatorName" maxlength="255" placeholder="e.g. Ahmed Ali" value="${escapeHtml(c.operator_name||'')}"></div>
+        <div class="field"><label>Helper</label><input id="helperName" maxlength="255" placeholder="e.g. Mahmoud Hassan" value="${escapeHtml(c.helper_name||'')}"></div>
+        <button class="save" onclick="saveStatusLocation()">Save Changes</button>
+      </div>
+    </div>
+    <div class="sections">
+      <section class="section full">
+        <div class="section-head"><h2>Section 1 — Maintenance</h2><span class="section-sub">Date, cause, repaired by, spare part and cost</span></div>
+        <div class="mt-form">
+          <div><label>Date</label><input id="mtDate" type="date"></div>
+          <div><label>Problem cause</label><input id="mtCause" placeholder="e.g. Hydraulic hose burst" maxlength="500"></div>
+          <div><label>Repaired by</label><input id="mtBy" placeholder="Technician name" maxlength="255"></div>
+          <div><label>Spare part used</label><input id="mtPart" placeholder="e.g. Hose 3/4&quot; (or none)" maxlength="500"></div>
+          <div><label>Cost (EGP)</label><input id="mtCost" type="number" min="0" step="0.01" placeholder="0.00"></div>
+          <div><label>Invoice (PDF)</label><input id="mtInvoice" type="file" accept="application/pdf,.pdf"></div>
+          <button class="add-cert" onclick="addMaintenance()">+ Add Record</button>
+        </div>
+        <div class="mt-wrap">
+          <table class="mt-table"><thead><tr><th>Date</th><th>Problem Cause</th><th>Repaired By</th><th>Spare Part Used</th><th>Cost (EGP)</th><th>Invoice</th><th></th></tr></thead><tbody id="mtBody"></tbody></table>
+        </div>
+        <div class="mt-total">Total maintenance cost: <strong id="mtTotal">0.00 EGP</strong></div>
+        ${c.maintenance_details ? `<details class="old-notes"><summary>Previous maintenance notes (old format)</summary><pre>${escapeHtml(c.maintenance_details)}</pre></details>` : ''}
+      </section>
+      <section class="section full">
+        <div class="section-head"><h2>Section 2 — Finance</h2><span class="section-sub">Revenue, expenses and net profit by year</span></div>
+        <div class="fin-year">
+          <div class="yr" id="finYearLabel">${financeYear}</div>
+          <div class="fin-slider">
+            <input id="finYear" type="range" min="2008" max="2040" step="1" value="${financeYear}" oninput="finYearPreview(this.value)" onchange="finYearChange(this.value)">
+            <div class="ends"><span>2008</span><span>2040</span></div>
+          </div>
+        </div>
+        <div class="fin-cards">
+          <div class="fin-card rev"><small>Total Revenue</small><b id="finTotalRev">0.00 EGP</b></div>
+          <div class="fin-card exp"><small>Total Expenses</small><b id="finTotalExp">0.00 EGP</b></div>
+          <div class="fin-card net"><small>Net Profit</small><b id="finNet" class="pos">0.00 EGP</b></div>
+        </div>
+        <div class="fin-cols">
+          <div class="fin-box rev">
+            <div class="fin-box-head"><span>Revenue</span><button class="fin-add" onclick="openFinModal('revenue')">+ Add Revenue</button></div>
+            <table class="fin-table"><thead><tr><th>Month</th><th class="num">Entries</th><th class="num">Total (EGP)</th><th></th></tr></thead><tbody id="finBodyRevenue"></tbody></table>
+          </div>
+          <div class="fin-box exp">
+            <div class="fin-box-head"><span>Expenses</span><button class="fin-add" onclick="openFinModal('expense')">+ Add Expense</button></div>
+            <table class="fin-table"><thead><tr><th>Month</th><th class="num">Entries</th><th class="num">Total (EGP)</th><th></th></tr></thead><tbody id="finBodyExpense"></tbody></table>
+          </div>
+        </div>
+        ${c.finance_details ? `<details class="old-notes"><summary>Previous finance notes (old format)</summary><pre>${escapeHtml(c.finance_details)}</pre></details>` : ''}
+      </section>
+      <div class="modal-bg" id="finModalBg" onclick="if(event.target===this)closeFinModal()">
+        <div class="modal rev" id="finModal">
+          <h3 id="finModalTitle">Add Revenue</h3>
+          <div class="row">
+            <div><label>Day</label><input id="finDay" type="number" min="1" max="31" placeholder="1-31"></div>
+            <div><label>Month</label><select id="finMonth"></select></div>
+            <div><label>Year</label><select id="finYearSel"></select></div>
+          </div>
+          <label>Amount (EGP)</label><input id="finAmount" type="number" min="0" step="0.01" placeholder="0.00">
+          <label>Transaction details</label><input id="finDetails" maxlength="500" placeholder="e.g. Rental invoice #123">
+          <div class="btns"><button class="btn-cancel" onclick="closeFinModal()">Cancel</button><button class="btn-ok" onclick="submitFin()">Save</button></div>
+        </div>
+      </div>
+      <section class="section full">
+        <div class="section-head"><h2>Section 3 — Certificates</h2><span class="section-sub">Issue, expiry, remaining time, status and PDF</span></div>
+        <div class="cert-form">
+          <div><label>Certificate name</label><input id="certName" placeholder="e.g. Lifting Inspection Certificate" maxlength="255"></div>
+          <div><label>Issue date</label><input id="certIssue" type="date"></div>
+          <div><label>Expire date</label><input id="certExpire" type="date"></div>
+          <div><label>Certificate (PDF)</label><input id="certFile" type="file" accept="application/pdf,.pdf"></div>
+          <button class="add-cert" onclick="addCertificate()">+ Add Certificate</button>
+        </div>
+        <div class="cert-wrap">
+          <table class="cert-table"><thead><tr><th>Certificate</th><th>Issue Date</th><th>Expire Date</th><th>Remaining</th><th>Status</th><th>PDF</th><th></th></tr></thead><tbody id="certBody"></tbody></table>
+        </div>
+      </section>
+    </div>`;
+  loadCertificates();
+  loadMaintenance();
+  loadFinance();
+}
+
+function certStatus(expire){
+  const days=daysLeft(expire);
+  if(days<0) return {key:'expired',label:'Expired'};
+  if(days<=30) return {key:'soon',label:'Expire soon'};
+  return {key:'valid',label:'Valid'};
+}
+
+function renderCertAlert(certs){
+  const box=document.getElementById('certAlert'); if(!box) return;
+  const expired=certs.filter(c=>certStatus(c.expire_date).key==='expired');
+  const soon=certs.filter(c=>certStatus(c.expire_date).key==='soon');
+  const line=c=>{const d=daysLeft(c.expire_date);return `<li><strong style="display:inline;font-size:inherit">${escapeHtml(c.certificate_name)}</strong> — ${d<0?`expired on ${formatDate(c.expire_date)} (${Math.abs(d)} day${Math.abs(d)===1?'':'s'} ago)`:d===0?`expires today (${formatDate(c.expire_date)})`:`expires on ${formatDate(c.expire_date)} (${d} day${d===1?'':'s'} left)`}</li>`;};
+  let html='';
+  if(expired.length) html+=`<div class="cert-alert expired"><strong>⛔ ${expired.length} certificate${expired.length===1?' has':'s have'} expired</strong><ul>${expired.map(line).join('')}</ul></div>`;
+  if(soon.length) html+=`<div class="cert-alert soon"><strong>⚠️ ${soon.length} certificate${soon.length===1?' is':'s are'} about to expire (within 1 month)</strong><ul>${soon.map(line).join('')}</ul></div>`;
+  box.innerHTML=html;
+}
+
+function certFileCell(c){
+  const base='/api/cranes/'+encodeURIComponent(craneId)+'/certificates/'+c.id+'/file';
+  if(Number(c.has_file)){
+    return `<a class="inv-link" href="${base}" target="_blank" rel="noopener" title="${escapeHtml(c.file_name||'')}">📄 View PDF</a><button class="inv-btn" onclick="removeCertFile(${c.id})">Remove</button>`;
+  }
+  return `<button class="inv-btn" onclick="pickCertFile(${c.id})">+ Attach PDF</button>`;
+}
+
+function renderCertificates(certs){
+  const body=document.getElementById('certBody'); if(!body) return;
+  renderCertAlert(certs);
+  if(!certs.length){body.innerHTML='<tr><td colspan="7" class="empty">No certificates added yet.</td></tr>';return;}
+  body.innerHTML=certs.map(cert=>{const st=certStatus(cert.expire_date);return `<tr><td><strong>${escapeHtml(cert.certificate_name)}</strong></td><td>${formatDate(cert.issue_date)}</td><td>${formatDate(cert.expire_date)}</td><td>${remainingText(cert.expire_date)}</td><td><span class="badge ${st.key}">${st.label}</span></td><td>${certFileCell(cert)}</td><td><button class="delete" onclick="deleteCertificate(${cert.id})">Delete</button></td></tr>`;}).join('');
+}
+
+async function loadCertificates(){
+  const body=document.getElementById('certBody'); if(!body) return;
+  try{
+    const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/certificates');
+    const data=await res.json();
+    if(!res.ok||!data.success) throw new Error(data.message||'Failed to load certificates');
+    renderCertificates(data.certificates||[]);
+  }catch(e){body.innerHTML='<tr><td colspan="7" class="empty">'+escapeHtml(e.message)+'</td></tr>';}
+}
+
+async function uploadCertFile(certId,file){
+  const res=await fetch('/api/cranes/'+craneId+'/certificates/'+certId+'/file?filename='+encodeURIComponent(file.name),{method:'POST',headers:{'Content-Type':'application/pdf'},body:file});
+  let data={}; try{data=await res.json();}catch(e){}
+  if(!res.ok||!data.success) throw new Error(data.message||'Could not upload PDF');
+}
+
+function pickCertFile(certId){
+  const input=document.createElement('input'); input.type='file'; input.accept='application/pdf,.pdf';
+  input.onchange=async()=>{
+    const file=input.files[0]; if(!validatePdf(file)) return;
+    try{await uploadCertFile(certId,file);}catch(e){alert(e.message);return;}
+    loadCertificates();
+  };
+  input.click();
+}
+
+async function removeCertFile(certId){
+  if(!confirm('Remove the PDF from this certificate?')) return;
+  const res=await fetch('/api/cranes/'+craneId+'/certificates/'+certId+'/file',{method:'DELETE'});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not remove PDF');return;} loadCertificates();
+}
+
+async function addCertificate(){
+  const fileInput=document.getElementById('certFile'); const file=fileInput.files[0];
+  const payload={certificate_name:document.getElementById('certName').value.trim(),issue_date:document.getElementById('certIssue').value,expire_date:document.getElementById('certExpire').value};
+  if(!payload.certificate_name||!payload.issue_date||!payload.expire_date){alert('Please fill certificate name, issue date and expire date.');return;}
+  if(payload.expire_date<payload.issue_date){alert('Expire date cannot be before the issue date.');return;}
+  if(!validatePdf(file)) return;
+  const res=await fetch('/api/cranes/'+craneId+'/certificates',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not add certificate');return;}
+  let uploadError=null;
+  if(file){ try{await uploadCertFile(data.certificate_id,file);}catch(e){uploadError=e.message;} }
+  ['certName','certIssue','certExpire'].forEach(i=>document.getElementById(i).value=''); fileInput.value='';
+  if(uploadError) alert('Certificate saved, but the PDF upload failed: '+uploadError+'\nYou can attach it again from the table.');
+  loadCertificates();
+}
+async function deleteCertificate(certId){
+  if(!confirm('Delete this certificate?')) return;
+  const res=await fetch('/api/cranes/'+craneId+'/certificates/'+certId,{method:'DELETE'});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not delete certificate');return;} loadCertificates();
+}
+/* ===== Helpers ===== */
+function money(n){ return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'; }
+function validatePdf(file){
+  if(!file) return false;
+  const isPdf = file.type==='application/pdf' || /\.pdf$/i.test(file.name);
+  if(!isPdf){ alert('Please choose a PDF file.'); return false; }
+  if(file.size>10*1024*1024){ alert('The PDF must be smaller than 10 MB.'); return false; }
+  return true;
+}
+
+/* ===== Status, location, operator & helper ===== */
+async function saveStatusLocation(){
+  const payload={
+    current_location:document.getElementById('currentLocation').value.trim(),
+    status:document.getElementById('craneStatus').value,
+    operator_name:document.getElementById('operatorName').value.trim(),
+    helper_name:document.getElementById('helperName').value.trim()
+  };
+  try{
+    const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/status-location',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(!res.ok||!data.success){alert(data.message||'Could not save changes');return;}
+    load();
+  }catch(e){alert(e.message);}
+}
+
+/* ===== Section 1: Maintenance ===== */
+function mtInvoiceCell(r){
+  const base='/api/cranes/'+encodeURIComponent(craneId)+'/maintenance/'+r.id+'/invoice';
+  if(Number(r.has_invoice)){
+    return `<a class="inv-link" href="${base}" target="_blank" rel="noopener" title="${escapeHtml(r.invoice_name||'')}">📄 View PDF</a><button class="inv-btn" onclick="removeMtInvoice(${r.id})">Remove</button>`;
+  }
+  return `<button class="inv-btn" onclick="pickMtInvoice(${r.id})">+ Attach PDF</button>`;
+}
+function renderMaintenance(records){
+  const body=document.getElementById('mtBody'); if(!body) return;
+  const total=records.reduce((s,r)=>s+Number(r.cost_egp||0),0);
+  const t=document.getElementById('mtTotal'); if(t) t.textContent=money(total);
+  if(!records.length){body.innerHTML='<tr><td colspan="7" class="empty">No maintenance records yet.</td></tr>';return;}
+  body.innerHTML=records.map(r=>`<tr><td>${formatDate(r.maintenance_date)}</td><td>${escapeHtml(r.problem_cause)}</td><td>${escapeHtml(r.repaired_by)}</td><td>${escapeHtml(r.spare_part_used||'-')}</td><td>${money(r.cost_egp)}</td><td>${mtInvoiceCell(r)}</td><td><button class="delete" onclick="deleteMaintenance(${r.id})">Delete</button></td></tr>`).join('');
+}
+async function loadMaintenance(){
+  const body=document.getElementById('mtBody'); if(!body) return;
+  try{
+    const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/maintenance');
+    const data=await res.json();
+    if(!res.ok||!data.success) throw new Error(data.message||'Failed to load maintenance records');
+    renderMaintenance(data.records||[]);
+  }catch(e){body.innerHTML='<tr><td colspan="7" class="empty">'+escapeHtml(e.message)+'</td></tr>';}
+}
+async function uploadMtInvoice(recordId,file){
+  const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/maintenance/'+recordId+'/invoice?filename='+encodeURIComponent(file.name),{method:'POST',headers:{'Content-Type':'application/pdf'},body:file});
+  let data={}; try{data=await res.json();}catch(e){}
+  if(!res.ok||!data.success) throw new Error(data.message||'Could not upload invoice');
+}
+function pickMtInvoice(recordId){
+  const input=document.createElement('input'); input.type='file'; input.accept='application/pdf,.pdf';
+  input.onchange=async()=>{
+    const file=input.files[0]; if(!validatePdf(file)) return;
+    try{await uploadMtInvoice(recordId,file);}catch(e){alert(e.message);return;}
+    loadMaintenance();
+  };
+  input.click();
+}
+async function removeMtInvoice(recordId){
+  if(!confirm('Remove the invoice PDF from this record?')) return;
+  const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/maintenance/'+recordId+'/invoice',{method:'DELETE'});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not remove invoice');return;} loadMaintenance();
+}
+async function addMaintenance(){
+  const fileInput=document.getElementById('mtInvoice'); const file=fileInput.files[0];
+  if(file && !validatePdf(file)) return;
+  const payload={
+    maintenance_date:document.getElementById('mtDate').value,
+    problem_cause:document.getElementById('mtCause').value.trim(),
+    repaired_by:document.getElementById('mtBy').value.trim(),
+    spare_part_used:document.getElementById('mtPart').value.trim(),
+    cost_egp:document.getElementById('mtCost').value
+  };
+  const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/maintenance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not add maintenance record');return;}
+  let uploadError=null;
+  if(file){ try{await uploadMtInvoice(data.record_id,file);}catch(e){uploadError=e.message;} }
+  ['mtDate','mtCause','mtBy','mtPart','mtCost'].forEach(i=>document.getElementById(i).value=''); fileInput.value='';
+  if(uploadError) alert('Record saved, but the invoice upload failed: '+uploadError+'\nYou can attach it again from the table.');
+  loadMaintenance();
+}
+async function deleteMaintenance(recordId){
+  if(!confirm('Delete this maintenance record?')) return;
+  const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/maintenance/'+recordId,{method:'DELETE'});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not delete record');return;} loadMaintenance();
+}
+
+/* ===== Section 2: Finance ===== */
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let finTx=[];
+const finOpen=new Set();
+let finType='revenue';
+
+function finYearPreview(v){ const l=document.getElementById('finYearLabel'); if(l) l.textContent=v; }
+function finYearChange(v){ financeYear=Number(v); finOpen.clear(); loadFinance(); }
+
+async function loadFinance(){
+  const bodyR=document.getElementById('finBodyRevenue'); if(!bodyR) return;
+  try{
+    const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/finance?year='+financeYear);
+    const data=await res.json();
+    if(!res.ok||!data.success) throw new Error(data.message||'Failed to load finance data');
+    finTx=data.transactions||[];
+    renderFinance();
+  }catch(e){
+    const msg='<tr><td colspan="4" class="empty">'+escapeHtml(e.message)+'</td></tr>';
+    bodyR.innerHTML=msg; document.getElementById('finBodyExpense').innerHTML=msg;
+  }
+}
+
+function finMonthRows(type){
+  let html='';
+  for(let m=1;m<=12;m++){
+    const items=finTx.filter(t=>t.type===type && Number(t.transaction_date.slice(5,7))===m);
+    const total=items.reduce((s,t)=>s+Number(t.amount),0);
+    const key=type+'-'+m, open=finOpen.has(key);
+    if(!items.length){
+      html+=`<tr class="fin-month empty"><td><span class="arrow"></span>${MONTHS[m-1]}</td><td class="num">0</td><td class="num">${money(0)}</td><td></td></tr>`;
+      continue;
+    }
+    html+=`<tr class="fin-month" onclick="toggleFinMonth('${key}')"><td><span class="arrow">${open?'▼':'▶'}</span>${MONTHS[m-1]}</td><td class="num">${items.length}</td><td class="num amt">${money(total)}</td><td></td></tr>`;
+    if(open){
+      html+=items.map(t=>`<tr class="fin-day"><td>${formatDate(t.transaction_date)} — ${escapeHtml(t.details)}</td><td class="num"></td><td class="num">${money(t.amount)}</td><td class="num"><button class="fin-del" onclick="deleteFinTx(${t.id})">Delete</button></td></tr>`).join('');
+    }
+  }
+  return html;
+}
+
+function renderFinance(){
+  const rb=document.getElementById('finBodyRevenue'), eb=document.getElementById('finBodyExpense'); if(!rb||!eb) return;
+  rb.innerHTML=finMonthRows('revenue');
+  eb.innerHTML=finMonthRows('expense');
+  const rev=finTx.filter(t=>t.type==='revenue').reduce((s,t)=>s+Number(t.amount),0);
+  const exp=finTx.filter(t=>t.type==='expense').reduce((s,t)=>s+Number(t.amount),0);
+  const net=rev-exp;
+  document.getElementById('finTotalRev').textContent=money(rev);
+  document.getElementById('finTotalExp').textContent=money(exp);
+  const n=document.getElementById('finNet'); n.textContent=money(net); n.className=net<0?'neg':'pos';
+}
+function toggleFinMonth(key){ if(finOpen.has(key)) finOpen.delete(key); else finOpen.add(key); renderFinance(); }
+
+function openFinModal(type){
+  finType=type;
+  const modal=document.getElementById('finModal');
+  modal.className='modal '+(type==='revenue'?'rev':'exp');
+  document.getElementById('finModalTitle').textContent=type==='revenue'?'Add Revenue':'Add Expense';
+  const mSel=document.getElementById('finMonth'), ySel=document.getElementById('finYearSel');
+  mSel.innerHTML=MONTHS.map((n,i)=>`<option value="${i+1}">${n}</option>`).join('');
+  let years=''; for(let y=2008;y<=2040;y++) years+=`<option value="${y}">${y}</option>`;
+  ySel.innerHTML=years; ySel.value=String(financeYear);
+  const now=new Date();
+  mSel.value=String(now.getFullYear()===financeYear?now.getMonth()+1:1);
+  document.getElementById('finDay').value=''; document.getElementById('finAmount').value=''; document.getElementById('finDetails').value='';
+  document.getElementById('finModalBg').classList.add('open');
+}
+function closeFinModal(){ document.getElementById('finModalBg').classList.remove('open'); }
+
+async function submitFin(){
+  const payload={
+    type:finType,
+    day:document.getElementById('finDay').value,
+    month:document.getElementById('finMonth').value,
+    year:document.getElementById('finYearSel').value,
+    amount:document.getElementById('finAmount').value,
+    details:document.getElementById('finDetails').value.trim()
+  };
+  const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/finance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not save transaction');return;}
+  closeFinModal();
+  const y=Number(payload.year);
+  if(y!==financeYear){ financeYear=y; const s=document.getElementById('finYear'); if(s) s.value=y; finYearPreview(y); finOpen.clear(); }
+  finOpen.add(payload.type+'-'+Number(payload.month));
+  loadFinance();
+}
+async function deleteFinTx(txId){
+  if(!confirm('Delete this transaction?')) return;
+  const res=await fetch('/api/cranes/'+encodeURIComponent(craneId)+'/finance/'+txId,{method:'DELETE'});
+  const data=await res.json(); if(!res.ok||!data.success){alert(data.message||'Could not delete transaction');return;} loadFinance();
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Person Account - Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f3f6fb;--card:#fff;--line:#e3eaf5;--text:#111827;--muted:#7b8794;--blue:#0a7cf0;--red:#d93a3a;--green:#0d9b5c;--head:#eef2f7}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+    body{background:var(--bg);color:var(--text);min-height:100vh;padding:30px 34px 50px}
+    .wrap{max-width:1180px;margin:0 auto}
+
+    .topbar{display:flex;justify-content:flex-end;margin-bottom:22px}
+    .user{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem;white-space:nowrap}
+    .user svg{width:20px;height:20px;fill:#4c2a85}.user .sep{color:#9aa5b4;font-weight:400}
+
+    .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:.8rem;font-weight:600;margin-bottom:10px}
+    .back:hover{color:var(--blue)}
+    .titlebar{margin-bottom:28px}
+    .titlebar h1{font-size:2.1rem;font-weight:800;line-height:1.15}
+    .titlebar .role{display:inline-block;margin-top:10px;background:#e8f3ff;color:#2a86d6;font-weight:700;font-size:.82rem;padding:6px 14px;border-radius:20px}
+
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:26px}
+    .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px}
+    .stat small{display:block;color:var(--muted);font-size:.9rem;font-weight:500}
+    .stat b{display:block;margin-top:10px;font-size:1.85rem;font-weight:800;white-space:nowrap}
+    .stat .red{color:var(--red)}.stat .blue{color:var(--blue)}.stat .green{color:var(--green)}
+    .stat .formula{margin-top:6px;font-size:.72rem;color:#9aa5b4;font-weight:600}
+
+    .filters{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:22px}
+    .filters .f label{display:block;font-size:.66rem;font-weight:800;color:#64748b;text-transform:uppercase;margin-bottom:6px}
+    .filters select{height:44px;min-width:150px;border:1px solid #d6e0ee;border-radius:10px;padding:0 12px;background:#fff;font-size:.88rem;font-weight:600;color:var(--text);outline:none;cursor:pointer}
+    .filters select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(10,124,240,.12)}
+    .btn-reset{height:44px;border:1px solid #d6e0ee;background:#fff;border-radius:10px;padding:0 18px;font-weight:700;font-size:.85rem;cursor:pointer;color:#334155}
+    .btn-reset:hover{background:#f6f9fd}
+    .period{margin-left:auto;font-size:.82rem;color:var(--muted);font-weight:600;align-self:center}.period b{color:var(--text)}
+    .alltime{margin-top:6px;font-size:.72rem;color:#9aa5b4;font-weight:600}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .box{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .box-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;color:#fff;font-weight:800;font-size:1rem}
+    .box.exp .box-head{background:var(--red)}.box.pay .box-head{background:var(--blue)}
+    .box-head .tot{font-weight:600;font-size:.82rem;opacity:.92;margin-left:10px}
+    .btn-add{border:0;background:#fff;border-radius:8px;padding:9px 15px;font-weight:800;font-size:.8rem;cursor:pointer}
+    .box.exp .btn-add{color:var(--red)}.box.pay .btn-add{color:var(--blue)}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:420px}
+    th{background:var(--head);font-size:.74rem;text-transform:uppercase;color:#64748b;text-align:left;padding:13px 18px;border-bottom:1px solid #dde5ef}
+    td{padding:15px 18px;border-bottom:1px solid #edf1f6;font-size:.88rem;vertical-align:top}
+    td.date{white-space:nowrap;color:#475569}td.amt{font-weight:800;white-space:nowrap;text-align:right}th.r{text-align:right}
+    .box.exp td.amt{color:var(--red)}.box.pay td.amt{color:var(--blue)}
+    td.det{color:#334155}td.det.none{color:#a0aab8}
+    .del{border:0;background:#fee2e2;color:var(--red);border-radius:7px;padding:6px 10px;font-weight:700;font-size:.72rem;cursor:pointer}
+    .del:hover{background:#fecaca}
+    .empty{text-align:center;color:var(--muted);padding:40px 10px!important}
+    .state{text-align:center;color:var(--muted);padding:80px 10px;font-size:1rem}
+
+    .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+    .modal-bg.open{display:flex}
+    .modal{background:#fff;border-radius:16px;padding:26px;width:100%;max-width:430px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+    .modal h3{font-size:1.2rem}.modal.exp h3{color:var(--red)}.modal.pay h3{color:var(--blue)}
+    .modal label{display:block;font-size:.7rem;font-weight:800;color:#64748b;text-transform:uppercase;margin:16px 0 6px}
+    .modal input{width:100%;height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;font-size:.92rem;outline:none}
+    .modal input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(10,124,240,.12)}
+    .modal .err{color:var(--red);font-size:.8rem;min-height:18px;margin-top:10px}
+    .modal .btns{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+    .modal .btns button{border:0;border-radius:10px;padding:12px 20px;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn-cancel{background:#f1f5f9;color:#334155}.btn-save{color:#fff}.btn-save:disabled{opacity:.6;cursor:default}
+    .modal.exp .btn-save{background:var(--red)}.modal.pay .btn-save{background:var(--blue)}
+
+    .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:13px 22px;border-radius:10px;font-size:.85rem;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:60}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    @media(max-width:900px){.cols{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+    @media(max-width:600px){body{padding:18px 14px 40px}.titlebar h1{font-size:1.7rem}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="user">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.5"/><path d="M3 21c0-4.4 4-7 9-7s9 2.6 9 7z"/></svg>
+      <span id="userName">Essa Ali</span><span class="sep">|</span><span id="userRole">Admin</span>
+    </div>
+  </div>
+
+  <a class="back" href="persons.html">← Back to Persons</a>
+  <div id="content"><div class="state">Loading account...</div></div>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal exp" id="modal">
+    <h3 id="modalTitle">Add Expense</h3>
+    <label>Date</label><input id="fDate" type="date">
+    <label>Amount (EGP)</label><input id="fAmount" type="number" min="0" step="0.01" placeholder="0.00">
+    <label>Details (optional)</label><input id="fDetails" maxlength="500" placeholder="e.g. Spare parts purchase" autocomplete="off">
+    <div class="err" id="formErr"></div>
+    <div class="btns"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" id="btnSave" onclick="saveTx()">Save</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const personId=new URLSearchParams(location.search).get('id');
+let account=null, txType='expense';
+
+function escapeHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function egp(n){return 'EGP '+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});}
+function fmtDate(d){return d?new Date(d+'T00:00:00').toLocaleDateString('en-GB'):'-';}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200);}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+(function(){
+  try{
+    const u=JSON.parse(localStorage.getItem('cmsUser')||'null');
+    if(u&&u.username){
+      document.getElementById('userName').textContent=u.username;
+      const r=String(u.role||'Admin');
+      document.getElementById('userRole').textContent=r.charAt(0).toUpperCase()+r.slice(1);
+    }
+  }catch(e){}
+})();
+
+async function load(){
+  const box=document.getElementById('content');
+  if(!personId){box.innerHTML='<div class="state">No person selected.</div>';return;}
+  try{
+    const res=await fetch('/api/persons/'+encodeURIComponent(personId)+'/account');
+    const data=await res.json();
+    if(!res.ok||!data.success) throw new Error(data.message||'Failed to load the account');
+    account=data;
+  }catch(e){box.innerHTML='<div class="state">'+escapeHtml(e.message)+'</div>';return;}
+  render();
+}
+
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let flt={year:'',month:'',sort:'desc'};
+
+function viewList(){
+  const list=account.transactions.filter(t=>(!flt.year||t.transaction_date.slice(0,4)===flt.year)&&(!flt.month||t.transaction_date.slice(5,7)===flt.month));
+  return list.sort((a,b)=>{const c=a.transaction_date.localeCompare(b.transaction_date)||(a.id-b.id);return flt.sort==='asc'?c:-c;});
+}
+function periodLabel(){
+  if(flt.year&&flt.month) return MONTHS[Number(flt.month)-1]+' '+flt.year;
+  if(flt.year) return 'Year '+flt.year;
+  if(flt.month) return MONTHS[Number(flt.month)-1]+' (all years)';
+  return 'All time';
+}
+function setFlt(key,val){flt[key]=val;render();}
+function resetFlt(){flt={year:'',month:'',sort:'desc'};render();}
+
+function rows(list,type){
+  const items=list.filter(t=>t.type===type);
+  if(!items.length) return '<tr><td colspan="4" class="empty">No '+(type==='expense'?'expenses':'payments')+((flt.year||flt.month)?' in this period.':' yet.')+'</td></tr>';
+  return items.map(t=>`<tr><td class="date">${fmtDate(t.transaction_date)}</td><td class="det ${t.details?'':'none'}">${t.details?escapeHtml(t.details):'—'}</td><td class="amt">${egp(t.amount)}</td><td><button class="del" onclick="deleteTx(${t.id})">Delete</button></td></tr>`).join('');
+}
+
+function render(){
+  const p=account.person, all=account.totals;
+  document.title=p.name+' - Account';
+
+  const years=[...new Set(account.transactions.map(t=>t.transaction_date.slice(0,4)))].sort().reverse();
+  if(flt.year&&!years.includes(flt.year)) flt.year='';
+
+  const list=viewList();
+  const te=list.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
+  const tp=list.filter(t=>t.type==='payment').reduce((a,t)=>a+t.amount,0);
+  const bal=te-tp;
+  const filtered=!!(flt.year||flt.month);
+
+  document.getElementById('content').innerHTML=`
+    <div class="titlebar"><h1>${escapeHtml(p.name)}</h1><span class="role">${escapeHtml(p.role)}</span></div>
+    <div class="filters">
+      <div class="f"><label>Year</label><select onchange="setFlt('year',this.value)"><option value="">All years</option>${years.map(y=>`<option value="${y}" ${flt.year===y?'selected':''}>${y}</option>`).join('')}</select></div>
+      <div class="f"><label>Month</label><select onchange="setFlt('month',this.value)"><option value="">All months</option>${MONTHS.map((m,i)=>{const v=String(i+1).padStart(2,'0');return `<option value="${v}" ${flt.month===v?'selected':''}>${m}</option>`;}).join('')}</select></div>
+      <div class="f"><label>Sort by date</label><select onchange="setFlt('sort',this.value)"><option value="desc" ${flt.sort==='desc'?'selected':''}>Newest first</option><option value="asc" ${flt.sort==='asc'?'selected':''}>Oldest first</option></select></div>
+      <button class="btn-reset" onclick="resetFlt()">Reset</button>
+      <div class="period">Showing: <b>${periodLabel()}</b> · ${list.length} transaction${list.length===1?'':'s'}</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><small>Total Expenses</small><b class="red">${egp(te)}</b></div>
+      <div class="stat"><small>Total Payments</small><b class="blue">${egp(tp)}</b></div>
+      <div class="stat"><small>Balance</small><b class="${bal<0?'red':'green'}">${egp(bal)}</b><div class="formula">Balance = Expenses − Payments</div>${filtered?`<div class="alltime">All-time balance: ${egp(all.balance)}</div>`:''}</div>
+    </div>
+    <div class="cols">
+      <div class="box exp">
+        <div class="box-head"><span>Expenses<span class="tot">${egp(te)}</span></span><button class="btn-add" onclick="openModal('expense')">+ Add Expense</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Date</th><th>Details</th><th class="r">Amount</th><th></th></tr></thead><tbody>${rows(list,'expense')}</tbody></table></div>
+      </div>
+      <div class="box pay">
+        <div class="box-head"><span>Payments<span class="tot">${egp(tp)}</span></span><button class="btn-add" onclick="openModal('payment')">+ Add Payment</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Date</th><th>Details</th><th class="r">Amount</th><th></th></tr></thead><tbody>${rows(list,'payment')}</tbody></table></div>
+      </div>
+    </div>`;
+}
+
+function openModal(type){
+  txType=type;
+  document.getElementById('modal').className='modal '+(type==='expense'?'exp':'pay');
+  document.getElementById('modalTitle').textContent=type==='expense'?'Add Expense':'Add Payment';
+  document.getElementById('fDate').value=todayStr();
+  document.getElementById('fAmount').value=''; document.getElementById('fDetails').value='';
+  document.getElementById('formErr').textContent='';
+  document.getElementById('modalBg').classList.add('open');
+  document.getElementById('fAmount').focus();
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+
+async function saveTx(){
+  const payload={type:txType,transaction_date:document.getElementById('fDate').value,amount:document.getElementById('fAmount').value,details:document.getElementById('fDetails').value.trim()};
+  const err=document.getElementById('formErr'); err.textContent='';
+  if(!payload.transaction_date||!payload.amount||Number(payload.amount)<=0){err.textContent='Please enter a date and an amount greater than 0.';return;}
+  const btn=document.getElementById('btnSave'); btn.disabled=true;
+  try{
+    const res=await fetch('/api/persons/'+encodeURIComponent(personId)+'/transactions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(!res.ok||!data.success){err.textContent=data.message||'Could not save.';return;}
+    closeModal(); toast(txType==='expense'?'Expense added.':'Payment added.'); await load();
+  }catch(e){err.textContent='Could not reach the server.';}
+  finally{btn.disabled=false;}
+}
+
+async function deleteTx(id){
+  if(!confirm('Delete this transaction?')) return;
+  const res=await fetch('/api/persons/'+encodeURIComponent(personId)+'/transactions/'+id,{method:'DELETE'});
+  const data=await res.json();
+  if(!res.ok||!data.success){alert(data.message||'Could not delete.');return;}
+  toast('Transaction deleted.'); load();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeModal();
+  if(e.key==='Enter'&&document.getElementById('modalBg').classList.contains('open')&&e.target.tagName==='INPUT') saveTx();
+});
+window.addEventListener('pageshow',e=>{ if(e.persisted) load(); });
+load();
+</script>
+</body>
+</html>

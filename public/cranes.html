@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cranes - Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f9;
+      color: #1e293b;
+      padding: 35px 50px;
+      min-height: 100vh;
+    }
+
+    /* الهيدر العلوي */
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .title-area h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .title-area p {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn-back {
+      background-color: #0f274a;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-back:hover {
+      background-color: #183a6a;
+    }
+
+    .btn-add-primary {
+      background-color: #f5a61d;
+      color: #0f172a;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(245, 166, 29, 0.35);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-add-primary:hover {
+      background-color: #e09414;
+    }
+
+    /* شريط البحث وزر إضافة رافعة */
+    .search-bar-wrap {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 11px 16px;
+      font-size: 0.88rem;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #0f274a;
+    }
+
+    /* جدول عرض الرافعات */
+    .table-card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead th {
+      background: #ffffff;
+      padding: 16px 20px;
+      color: #64748b;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-bottom: 1px solid #e2e8f0;
+      text-transform: capitalize;
+    }
+
+    tbody td {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.85rem;
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .crane-cell strong {
+      display: block;
+      color: #0f172a;
+      font-weight: 800;
+    }
+
+    .crane-cell span {
+      font-size: 0.76rem;
+      color: #64748b;
+    }
+
+    /* حالات الـ Status */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .status-active {
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+
+    .status-maint {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+
+    .status-inactive {
+      background-color: #f1f5f9;
+      color: #64748b;
+    }
+
+    .btn-view {
+      background-color: #0f274a;
+      color: #ffffff;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-view:hover {
+      background-color: #1a3f75;
+    }
+
+    .btn-edit {
+      background-color: #fef3c7;
+      color: #b45309;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-edit:hover {
+      background-color: #fde68a;
+    }
+
+    .btn-delete {
+      background-color: #fee2e2;
+      color: #dc2626;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-delete:hover {
+      background-color: #fecaca;
+    }
+
+    /* نافذة المودال (Popup) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30, 41, 59, 0.55);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      width: 650px;
+      max-width: 95%;
+      padding: 28px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .modal-header h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .modal-header p {
+      color: #64748b;
+      font-size: 0.82rem;
+      margin-top: 3px;
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: #64748b;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .btn-close-modal:hover {
+      color: #0f172a;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 20px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #475569;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-size: 0.85rem;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      border-color: #0f274a;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-cancel {
+      background-color: #64748b;
+      color: #ffffff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background-color: #475569;
+    }
+
+    .btn-save {
+      background-color: #f5a61d;
+      color: #0f172a;
+      border: none;
+      padding: 9px 22px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-save:hover {
+      background-color: #e09414;
+    }
+
+    @media (max-width: 650px) {
+      body { padding: 20px 14px; }
+      .top-header { flex-direction: column; }
+      .header-actions { justify-content: flex-start; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full-width { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الهيدر العلوي -->
+  <div class="top-header">
+    <div class="title-area">
+      <h1>Cranes</h1>
+      <p>Search and manage your crane fleet</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-back" onclick="window.location.href='/dashboard.html'">← Back to Dashboard</button>
+      <button class="btn-add-primary" onclick="openModal()">+ Add Crane</button>
+    </div>
+  </div>
+
+  <!-- شريط البحث -->
+  <div class="search-bar-wrap">
+    <input type="text" id="searchInput" class="search-input" list="craneModelOptions" placeholder="Search by model, serial number or location...">
+    <datalist id="craneModelOptions"></datalist>
+  </div>
+
+  <!-- جدول عرض الرافعات -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Crane</th>
+          <th>Serial Number</th>
+          <th>Year</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="cranesTableBody">
+        <!-- يتم التحميل من قاعدة البيانات -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- نافذة إضافة / تعديل رافعة Modal Window -->
+  <div class="modal-overlay" id="addCraneModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Crane</h2>
+        <p id="modalSubtitle">Create a new crane profile</p>
+        <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+      </div>
+
+      <form id="addCraneForm">
+        <div class="form-grid">
+          <!-- MODEL -->
+          <div class="form-group">
+            <label for="model_name">MODEL</label>
+            <input type="text" id="model_name" placeholder="e.g. LTM 1100-4.2" required>
+          </div>
+
+          <!-- SERIAL NUMBER -->
+          <div class="form-group">
+            <label for="serial_number">SERIAL NUMBER</label>
+            <input type="text" id="serial_number" placeholder="e.g. 123456" required>
+          </div>
+
+          <!-- YEAR -->
+          <div class="form-group">
+            <label for="model_year">YEAR</label>
+            <input type="number" id="model_year" placeholder="2020">
+          </div>
+
+          <!-- LOCATION -->
+          <div class="form-group">
+            <label for="location">LOCATION</label>
+            <input type="text" id="location" placeholder="Alexandria" required>
+          </div>
+
+          <!-- CURRENT LOCATION -->
+          <div class="form-group">
+            <label for="current_location">CURRENT LOCATION</label>
+            <input type="text" id="current_location" placeholder="Site North Sector">
+          </div>
+
+          <!-- STATUS (Dropdown List) -->
+          <div class="form-group">
+            <label for="status">STATUS</label>
+            <select id="status">
+              <option value="Active">Active</option>
+              <option value="Under Maintenance">Under Maintenance</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          <!-- CAPACITY -->
+          <div class="form-group">
+            <label for="capacity_tons">CAPACITY (TONS)</label>
+            <input type="number" step="0.1" id="capacity_tons" placeholder="e.g. 100 Ton">
+          </div>
+
+          <!-- CRANE OPERATOR NAME -->
+          <div class="form-group">
+            <label for="operator_name">CRANE OPERATOR NAME</label>
+            <input type="text" id="operator_name" placeholder="e.g. Ahmed Ali">
+          </div>
+
+          <!-- HELPER NAME -->
+          <div class="form-group">
+            <label for="helper_name">HELPER NAME</label>
+            <input type="text" id="helper_name" placeholder="e.g. Mahmoud Hassan">
+          </div>
+
+          <!-- CRANE IMAGE -->
+          <div class="form-group full-width">
+            <label for="crane_image">CRANE IMAGE</label>
+            <input type="file" id="crane_image" accept="image/*">
+            <small id="imageHint" style="color:#94a3b8;font-size:.7rem;">Optional. Max 5 MB.</small>
+          </div>
+
+          <!-- ADDITIONAL NOTES -->
+          <div class="form-group full-width">
+            <label for="additional_notes">NOTES</label>
+            <textarea id="additional_notes" placeholder="Additional notes..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-save" id="saveBtn">Save Crane</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let allCranes = [];
+    let editingId = null; // null = Add mode, number = Edit mode
+
+    function esc(v = '') {
+      return String(v).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function setModalMode() {
+      const editing = editingId !== null;
+      document.getElementById('modalTitle').textContent = editing ? 'Edit Crane' : 'Add Crane';
+      document.getElementById('modalSubtitle').textContent = editing ? 'Update the crane profile' : 'Create a new crane profile';
+      document.getElementById('saveBtn').textContent = editing ? 'Save Changes' : 'Save Crane';
+      document.getElementById('imageHint').textContent = editing
+        ? 'Optional. Leave empty to keep the current image. Max 5 MB.'
+        : 'Optional. Max 5 MB.';
+    }
+
+    function openModal() {
+      editingId = null;
+      document.getElementById('addCraneForm').reset();
+      setModalMode();
+      document.getElementById('addCraneModal').classList.add('active');
+    }
+
+    // فتح نافذة التعديل وتعبئتها ببيانات الرافعة
+    function openEditModal(id) {
+      const c = allCranes.find(x => Number(x.id) === Number(id));
+      if (!c) return;
+      editingId = Number(c.id);
+      document.getElementById('addCraneForm').reset();
+      document.getElementById('model_name').value = c.model_name || '';
+      document.getElementById('serial_number').value = c.serial_number || '';
+      document.getElementById('model_year').value = c.model_year || '';
+      document.getElementById('location').value = c.location || '';
+      document.getElementById('current_location').value = c.current_location || '';
+      document.getElementById('status').value = c.status || 'Active';
+      document.getElementById('capacity_tons').value = c.capacity_tons || '';
+      document.getElementById('operator_name').value = c.operator_name || '';
+      document.getElementById('helper_name').value = c.helper_name || '';
+      document.getElementById('additional_notes').value = c.additional_notes || '';
+      setModalMode();
+      document.getElementById('addCraneModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('addCraneModal').classList.remove('active');
+      document.getElementById('addCraneForm').reset();
+      editingId = null;
+      setModalMode();
+    }
+
+    // جلب الرافعات من السيرفر
+    async function loadCranes() {
+      try {
+        const res = await fetch('/api/cranes');
+        const data = await res.json();
+        if (data.success) {
+          allCranes = data.cranes;
+          updateModelOptions();
+          renderTable(allCranes);
+        }
+      } catch (err) {
+        console.error('Failed to load cranes:', err);
+      }
+    }
+
+    // بناء الجدول
+    function renderTable(cranes) {
+      const tbody = document.getElementById('cranesTableBody');
+      tbody.innerHTML = '';
+
+      if (cranes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 25px;">No cranes found</td></tr>';
+        return;
+      }
+
+      cranes.forEach(crane => {
+        let statusClass = 'status-active';
+        if (crane.status === 'Under Maintenance') statusClass = 'status-maint';
+        else if (crane.status === 'Inactive') statusClass = 'status-inactive';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="crane-cell">
+            <strong>${esc(crane.model_name)}</strong>
+            <span>${crane.capacity_tons ? esc(crane.capacity_tons) + ' Ton' : ''}</span>
+          </td>
+          <td>${esc(crane.serial_number)}</td>
+          <td>${crane.model_year || '-'}</td>
+          <td>${esc(crane.location || '-')}</td>
+          <td><span class="status-badge ${statusClass}">${esc(crane.status)}</span></td>
+          <td style="white-space: nowrap;">
+            <button class="btn-view" onclick="window.location.href='crane-details.html?id=' + encodeURIComponent(${crane.id})">View</button>
+            <button class="btn-edit" onclick="openEditModal(${crane.id})">Edit</button>
+            <button class="btn-delete" onclick="deleteCrane(${crane.id})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // عرض كل موديلات الرافعات الموجودة كخيارات أثناء البحث
+    function updateModelOptions() {
+      const datalist = document.getElementById('craneModelOptions');
+      const models = [...new Set(allCranes
+        .map(c => c.model_name)
+        .filter(Boolean))];
+      datalist.innerHTML = models
+        .map(model => `<option value="${model.replace(/"/g, '&quot;')}"></option>`)
+        .join('');
+    }
+
+    // حذف رافعة
+    async function deleteCrane(id) {
+      const crane = allCranes.find(c => Number(c.id) === Number(id));
+      const label = crane ? `${crane.model_name} (${crane.serial_number})` : 'this crane';
+      if (!confirm(`Delete ${label}?\n\nThis will also permanently delete all its maintenance records, finance transactions and certificates.`)) return;
+
+      try {
+        const res = await fetch('/api/cranes/' + encodeURIComponent(id), { method: 'DELETE' });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          await loadCranes();
+          const q = document.getElementById('searchInput').value.toLowerCase();
+          if (q) document.getElementById('searchInput').dispatchEvent(new Event('input'));
+        } else {
+          alert(data.message || 'Could not delete crane');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Could not delete crane. Make sure the server was restarted.');
+      }
+    }
+
+    // البحث الفوري في الجدول
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const filtered = allCranes.filter(c => 
+        (c.model_name && c.model_name.toLowerCase().includes(query)) ||
+        (c.serial_number && c.serial_number.toLowerCase().includes(query)) ||
+        (c.location && c.location.toLowerCase().includes(query))
+      );
+      renderTable(filtered);
+    });
+
+    // إرسال البيانات وحفظها في قاعدة البيانات (إضافة أو تعديل)
+    document.getElementById('addCraneForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById('saveBtn');
+      const isEdit = editingId !== null;
+      const idleLabel = isEdit ? 'Save Changes' : 'Save Crane';
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      const imageFile = document.getElementById('crane_image').files[0];
+      let imageData = null;
+      if (imageFile) {
+        if (imageFile.size > 5 * 1024 * 1024) {
+          alert('Image must be 5 MB or smaller.');
+          saveBtn.disabled = false;
+          saveBtn.textContent = idleLabel;
+          return;
+        }
+        imageData = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(imageFile);
+        });
+      }
+
+      const payload = {
+        model_name: document.getElementById('model_name').value.trim(),
+        serial_number: document.getElementById('serial_number').value.trim(),
+        location: document.getElementById('location').value.trim(),
+        current_location: document.getElementById('current_location').value.trim(),
+        model_year: document.getElementById('model_year').value ? parseInt(document.getElementById('model_year').value) : null,
+        status: document.getElementById('status').value,
+        capacity_tons: document.getElementById('capacity_tons').value ? parseFloat(document.getElementById('capacity_tons').value) : null,
+        operator_name: document.getElementById('operator_name').value.trim(),
+        helper_name: document.getElementById('helper_name').value.trim(),
+        additional_notes: document.getElementById('additional_notes').value.trim(),
+        image_data: imageData
+      };
+
+      try {
+        const url = isEdit ? '/api/cranes/' + encodeURIComponent(editingId) : '/api/cranes';
+        const res = await fetch(url, {
+          method: isEdit ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        // قراءة الرد والتأكد مما إذا كان JSON أو صفحة خطأ
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          throw new Error('Server returned HTML instead of JSON. Make sure node server.js is restarted.');
+        }
+
+        if (res.ok && data.success) {
+          alert(isEdit ? 'Crane updated successfully!' : 'Crane saved successfully!');
+          closeModal();
+          await loadCranes();
+          const q = document.getElementById('searchInput').value;
+          if (q) document.getElementById('searchInput').dispatchEvent(new Event('input'));
+        } else {
+          alert(data.message || 'Error saving crane');
+        }
+      } catch (err) {
+        console.error(err);
+        alert(err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = editingId !== null ? 'Save Changes' : 'Save Crane';
+      }
+    });
+
+    // تحميل البيانات تلقائياً عند فتح الصفحة
+    document.addEventListener('DOMContentLoaded', loadCranes);
+  </script>
+</body>
+</html>

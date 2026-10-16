@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Finance - Crane Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+    :root{--navy:#0f274a;--amber:#f5a61d;--blue:#1d6fe8;--green:#16a34a;--red:#dc2626}
+    body{background:#f4f6f9;color:#1e293b;padding:28px 36px;min-height:100vh}
+
+    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+    .title-block{display:flex;align-items:center;gap:14px}
+    .title-block svg{width:40px;height:40px;stroke:var(--navy);flex-shrink:0}
+    .title-block h1{font-size:1.6rem;font-weight:800;color:#0f172a}
+    .title-block p{font-size:.8rem;color:#64748b;margin-top:2px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid #cbd5e1;background:#fff;color:var(--navy);font-weight:700;font-size:.8rem;padding:0 16px;height:42px;border-radius:8px;cursor:pointer;white-space:nowrap}
+    .btn:hover{border-color:var(--navy)}
+    .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .btn.primary:hover{background:#1558c0}
+    .btn.danger{color:var(--red);border-color:#fecaca}
+    .month-box{display:flex;align-items:center;gap:8px;border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:0 12px;height:42px}
+    .month-box input{border:0;outline:none;font-weight:700;color:#1e293b;background:transparent;font-size:.82rem}
+
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    .kpi{border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;border:1px solid}
+    .kpi .ico{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:rgba(255,255,255,.75);flex-shrink:0}
+    .kpi .info{flex:1;min-width:0}
+    .kpi small{font-size:.72rem;font-weight:600;color:#475569}
+    .kpi b{display:block;font-size:1.2rem;font-weight:800;margin:4px 0 2px;white-space:nowrap}
+    .kpi.inc{background:#f0fdf4;border-color:#bbf7d0}.kpi.inc b{color:#15803d}
+    .kpi.exp{background:#fef2f2;border-color:#fecaca}.kpi.exp b{color:#b91c1c}
+    .kpi.net{background:#eff6ff;border-color:#bfdbfe}.kpi.net b{color:#1d4ed8}
+    .kpi.cnt{background:#faf5ff;border-color:#e9d5ff}.kpi.cnt b{color:#334155}
+    .chg{font-size:.7rem;font-weight:800}
+    .chg.good{color:#16a34a}.chg.bad{color:#dc2626}.chg.flat{color:#94a3b8}
+    .spark{width:96px;height:34px;flex-shrink:0}
+
+    .panel{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+    .filters input,.filters select{border:1px solid #cbd5e1;border-radius:8px;padding:0 12px;height:40px;font-size:.78rem;font-weight:600;background:#fff;color:#1e293b;outline:none}
+    .filters .search{flex:1;min-width:220px}
+    .range{display:flex;align-items:center;gap:6px;color:#94a3b8;font-weight:700}
+    .gb{display:flex;align-items:center;gap:8px;font-size:.68rem;font-weight:800;color:#64748b;text-transform:uppercase;margin-left:auto}
+
+    .tbl-wrap{overflow-x:auto;border:1px solid #e2e8f0;border-radius:8px}
+    table{width:100%;border-collapse:collapse;min-width:1080px}
+    th{padding:13px 8px;font-size:.75rem;font-weight:800;color:#1e293b;text-align:center;border-bottom:1px solid #e2e8f0;border-right:1px solid #fff;white-space:nowrap}
+    th.left,td.left{text-align:left}
+    td{padding:7px 8px;font-size:.78rem;text-align:center;border-bottom:1px solid #eef2f7;font-weight:500;white-space:nowrap}
+    td.desc{text-align:left;white-space:normal;max-width:260px;min-width:160px}
+    tbody tr:hover td{filter:brightness(.97)}
+    tr.total td{font-weight:800;border-top:2px solid #cbd5e1;background:#eaf2ff;padding:12px 8px}
+    .dots{border:0;background:transparent;cursor:pointer;font-size:1.1rem;color:#64748b;padding:0 8px;font-weight:800}
+    .dots:hover{color:var(--navy)}
+    .neg{color:var(--red)}
+    .empty{padding:30px;text-align:center;color:#94a3b8;font-size:.85rem}
+
+    .bottom{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:16px;margin-top:18px}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+    .card h3{display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:800;color:#0f172a;margin-bottom:14px}
+    .card h3 button{border:0;background:none;color:var(--blue);font-weight:700;font-size:.72rem;cursor:pointer}
+    .mini-row{display:flex;gap:8px;flex-wrap:wrap}
+    .mini{flex:1;min-width:84px;border-radius:8px;padding:10px 8px;text-align:center}
+    .mini small{display:block;font-size:.68rem;font-weight:800;color:#334155;margin-bottom:10px}
+    .mini b{font-size:.85rem;font-weight:800}
+    .mini.big b{font-size:.95rem}
+    .recent{list-style:none}
+    .recent li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.76rem}
+    .recent li:last-child{border-bottom:0}
+    .recent .d{color:#64748b;white-space:nowrap}
+    .recent .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .recent .a{font-weight:800;white-space:nowrap}
+    .pos{color:var(--green)}
+
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+    .modal{background:#fff;border-radius:14px;width:100%;max-width:500px;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+    .m-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e2e8f0}
+    .m-head h3{font-size:1.05rem;font-weight:800}
+    .x{border:0;background:none;font-size:1.6rem;line-height:1;cursor:pointer;color:#64748b}
+    .m-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+    .m-body label,.lbl{font-size:.72rem;font-weight:800;text-transform:uppercase;color:#64748b;display:flex;flex-direction:column;gap:6px}
+    .lbl small{text-transform:none;font-weight:500;color:#94a3b8;font-size:.72rem}
+    .m-body input{border:1px solid #cbd5e1;border-radius:8px;padding:0 12px;height:42px;font-size:.9rem;font-weight:600;outline:none;color:#1e293b}
+    .m-body input:focus{border-color:var(--blue)}
+    .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .chip{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:grab;border:2px solid transparent;user-select:none;color:#1e293b}
+    .chip:active{cursor:grabbing}
+    .chip.picked{border-color:var(--navy)}
+    .dz{border:2px dashed #94a3b8;border-radius:10px;min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px;color:#94a3b8;font-size:.8rem;font-weight:600;transition:.15s}
+    .dz.over{border-color:var(--blue);background:#eff6ff}
+    .dz.filled{border-style:solid;border-color:#cbd5e1;color:#1e293b}
+    .dz .clear{border:0;background:none;color:#64748b;cursor:pointer;font-size:1.2rem}
+    .m-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 22px;border-top:1px solid #e2e8f0}
+    .tx-line{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:.8rem}
+    .tx-line:last-child{border-bottom:0}
+    .tx-line .grow{flex:1;min-width:0}
+    .tx-line .sub{color:#64748b;font-size:.72rem;margin-top:2px;word-break:break-word}
+    .tx-line .amt{font-weight:800;white-space:nowrap}
+
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f274a;color:#fff;padding:12px 20px;border-radius:8px;font-size:.82rem;font-weight:600;z-index:200;display:none}
+    #toast.err{background:#b91c1c}
+
+    @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.bottom{grid-template-columns:1fr}}
+    @media(max-width:650px){body{padding:18px 12px}.kpis{grid-template-columns:1fr}.gb{margin-left:0}}
+    @media print{
+      @page{size:landscape;margin:10mm}
+      body{background:#fff;padding:0}
+      .no-print,.dots-col,.dots{display:none!important}
+      .panel,.card,.kpi{box-shadow:none}
+      .tbl-wrap{overflow:visible}
+      table{min-width:0}
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="title-block">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+      <div>
+        <h1>Company Finance</h1>
+        <p>Manage daily transactions, salaries and company financial records</p>
+      </div>
+    </div>
+    <div class="actions no-print">
+      <label class="month-box">📅 <input type="month" id="monthInput"></label>
+      <button class="btn primary" id="addBtn">＋ Add Transaction</button>
+      <button class="btn" id="exportBtn">📊 Export Excel</button>
+      <button class="btn" onclick="window.print()">🖨️ Print</button>
+      <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="panel">
+    <div class="filters no-print">
+      <input class="search" id="searchInput" type="text" placeholder="🔍  Search by description, person or date...">
+      <select id="typeSel">
+        <option value="all">All Types</option>
+        <option value="revenue">Revenue</option>
+        <option value="expense">Expenses</option>
+      </select>
+      <select id="whoSel"></select>
+      <div class="range"><input type="date" id="fromInput"> → <input type="date" id="toInput"></div>
+      <div class="gb">Group By
+        <select id="groupSel">
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+          <option value="tx">Transaction</option>
+        </select>
+      </div>
+    </div>
+    <div class="tbl-wrap"><table id="tbl"></table></div>
+  </div>
+
+  <div class="bottom" id="bottom"></div>
+
+  <div id="modalRoot"></div>
+  <div id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <script>
+    // ===== Fixed columns =====
+    const PEOPLE = [
+      {key:'ahmed',   label:'Ahmed Fawzy',    head:'#cfe3ff', body:'#eef5ff'},
+      {key:'abdalla', label:'Eng. Abdalla',   head:'#cfe3ff', body:'#eef5ff'},
+      {key:'ayman',   label:'Ayman Soliman',  head:'#fdf3a7', body:'#fffbd9'},
+      {key:'aly',     label:'Aly Essa',       head:'#f5d3f7', body:'#fcebfd'},
+      {key:'general', label:'General Expenses', head:'#c9f0d2', body:'#e9f9ed'}
+    ];
+    const TOTAL_COL = {label:'Total Expenses', head:'#fbd0d0', body:'#fdeaea'};
+    const REV_COL   = {label:'Revenue',        head:'#cfe3ff', body:'#eef5ff'};
+    const NET_COL   = {label:'Net',            head:'#fdf3a7', body:'#fffbd9'};
+    const LABEL = {revenue:'Revenue'};
+    PEOPLE.forEach(p => LABEL[p.key] = p.label);
+    const CHIP_COLOR = {revenue:'#bbf7d0'};
+    PEOPLE.forEach(p => CHIP_COLOR[p.key] = p.head);
+
+    const state = {month:'', from:'', to:'', tx:[], prev:[], type:'all', who:'all', q:'', group:'day', rows:[], totals:null, pick:null};
+
+    // ===== Helpers =====
+    const $ = id => document.getElementById(id);
+    const esc = (v='') => String(v).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    const num = n => (Number(n)||0).toLocaleString('en-US', {maximumFractionDigits:2});
+    const egp = n => 'EGP ' + num(n);
+    const pad = n => String(n).padStart(2,'0');
+    const ymd = (y,m,d) => `${y}-${pad(m)}-${pad(d)}`;
+    const fmt = s => { const [y,m,d] = s.split('-'); return `${d}-${m}-${y}`; };
+    const utc = s => { const [y,m,d] = s.split('-').map(Number); return Date.UTC(y,m-1,d); };
+    const diffDays = (a,b) => Math.round((utc(b)-utc(a))/86400000);
+    function addDays(s,n){ const t = new Date(utc(s)+n*86400000); return ymd(t.getUTCFullYear(), t.getUTCMonth()+1, t.getUTCDate()); }
+    function todayStr(){ const t = new Date(); return ymd(t.getFullYear(), t.getMonth()+1, t.getDate()); }
+    function monthRange(ym){ const [y,m] = ym.split('-').map(Number); const last = new Date(Date.UTC(y,m,0)).getUTCDate(); return {from:ymd(y,m,1), to:ymd(y,m,last)}; }
+    function monthLabel(ym){ const [y,m] = ym.split('-').map(Number); return new Date(Date.UTC(y,m-1,1)).toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'}); }
+    function weekStart(s){ const day = new Date(utc(s)).getUTCDay(); return addDays(s, -((day+6)%7)); }
+    function prevRange(from,to){
+      const mr = monthRange(from.slice(0,7));
+      if(from===mr.from && to===mr.to){
+        const [y,m] = from.split('-').map(Number);
+        return monthRange(`${m===1?y-1:y}-${pad(m===1?12:m-1)}`);
+      }
+      const len = diffDays(from,to)+1;
+      return {from:addDays(from,-len), to:addDays(from,-1)};
+    }
+    function toast(msg, isErr){
+      const t = $('toast'); t.textContent = msg; t.className = isErr ? 'err' : ''; t.style.display = 'block';
+      clearTimeout(toast._t); toast._t = setTimeout(()=>t.style.display='none', 3200);
+    }
+
+    // ===== Data =====
+    async function api(from,to){
+      const res = await fetch(`/api/company?from=${from}&to=${to}`);
+      const d = await res.json();
+      if(!res.ok || !d.success) throw new Error(d.message || 'Failed to load data');
+      return d.transactions;
+    }
+    async function load(){
+      try{
+        const p = prevRange(state.from, state.to);
+        const [a,b] = await Promise.all([api(state.from,state.to), api(p.from,p.to)]);
+        state.tx = a; state.prev = b;
+        renderKpis(); renderTable();
+      }catch(e){
+        $('tbl').innerHTML = `<tbody><tr><td class="empty">${esc(e.message)}<br>Make sure the server was restarted.</td></tr></tbody>`;
+      }
+    }
+
+    function stats(list){
+      let inc=0, exp=0;
+      list.forEach(t => { if(t.category==='revenue') inc+=t.amount; else exp+=t.amount; });
+      return {inc, exp, net:inc-exp, count:list.length};
+    }
+    function series(list, pick){
+      const n = Math.max(diffDays(state.from,state.to)+1, 1);
+      const arr = new Array(n).fill(0);
+      list.forEach(t => { const i = diffDays(state.from,t.transaction_date); if(i>=0 && i<n) arr[i]+=pick(t); });
+      if(arr.length<=40) return arr;
+      const size = Math.ceil(arr.length/40), out = [];
+      for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size).reduce((a,b)=>a+b,0));
+      return out;
+    }
+    function spark(arr,color){
+      if(arr.length<2) arr = [0,0];
+      const w=96,h=34,p=3, max=Math.max(...arr), min=Math.min(...arr);
+      const pts = arr.map((v,i)=>{
+        const x = p + i*(w-2*p)/(arr.length-1);
+        const y = max===min ? h/2 : h-p-(v-min)/(max-min)*(h-2*p);
+        return x.toFixed(1)+','+y.toFixed(1);
+      }).join(' ');
+      return `<svg class="spark" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+    }
+    function change(cur,prev,upGood){
+      if(!prev) return '<span class="chg flat">— vs last period</span>';
+      const p = (cur-prev)/Math.abs(prev)*100, up = p>=0;
+      return `<span class="chg ${up===upGood?'good':'bad'}">${up?'↑ +':'↓ '}${Math.round(p)}%</span>`;
+    }
+
+    function renderKpis(){
+      const c = stats(state.tx), p = stats(state.prev), tx = state.tx;
+      const card = (cls,ico,label,val,chg,sp) =>
+        `<div class="kpi ${cls}"><div class="ico">${ico}</div><div class="info"><small>${label}</small><b>${val}</b>${chg}</div>${sp}</div>`;
+      $('kpis').innerHTML =
+        card('inc','💰','Total Income', egp(c.inc), change(c.inc,p.inc,true),  spark(series(tx,t=>t.category==='revenue'?t.amount:0),'#16a34a')) +
+        card('exp','🧾','Total Expenses', egp(c.exp), change(c.exp,p.exp,false), spark(series(tx,t=>t.category!=='revenue'?t.amount:0),'#dc2626')) +
+        card('net','📈','Net Profit', egp(c.net), change(c.net,p.net,true),   spark(series(tx,t=>t.category==='revenue'?t.amount:-t.amount),'#2563eb')) +
+        card('cnt','👥','Total Transactions', num(c.count), change(c.count,p.count,true), spark(series(tx,()=>1),'#9333ea'));
+    }
+
+    // ===== Table =====
+    function filtered(){
+      const q = state.q.trim().toLowerCase();
+      return state.tx.filter(t => {
+        if(state.type==='revenue' && t.category!=='revenue') return false;
+        if(state.type==='expense' && t.category==='revenue') return false;
+        if(state.who!=='all' && t.category!==state.who) return false;
+        if(q){
+          const hay = [t.details||'', LABEL[t.category], fmt(t.transaction_date), t.transaction_date, String(t.amount)].join(' ').toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+    function newRow(label){ return {label, descs:[], vals:{ahmed:0,abdalla:0,ayman:0,aly:0,general:0}, revenue:0, txs:[]}; }
+    function addTx(row,t){
+      if(t.category==='revenue') row.revenue += t.amount; else row.vals[t.category] += t.amount;
+      row.txs.push(t);
+      const d = (t.details||'').trim() || LABEL[t.category];
+      if(!row.descs.includes(d)) row.descs.push(d);
+    }
+    function buildRows(list){
+      const g = state.group, map = new Map();
+      const days = diffDays(state.from,state.to)+1;
+      if(g==='day' && days<=400){
+        for(let i=0;i<days;i++){ const d = addDays(state.from,i); map.set(d,newRow(fmt(d))); }
+      }
+      list.forEach(t => {
+        let key, label;
+        if(g==='day'){ key=t.transaction_date; label=fmt(key); }
+        else if(g==='week'){ key=weekStart(t.transaction_date); label='Week of '+fmt(key); }
+        else if(g==='month'){ key=t.transaction_date.slice(0,7); label=monthLabel(key); }
+        else { key='t'+t.id; label=fmt(t.transaction_date); }
+        if(!map.has(key)) map.set(key,newRow(label));
+        addTx(map.get(key),t);
+      });
+      const rows = [...map.values()];
+      rows.forEach(r => {
+        r.total = PEOPLE.reduce((a,p)=>a+r.vals[p.key],0);
+        r.net = r.revenue - r.total;
+      });
+      return rows;
+    }
+
+    function renderTable(){
+      const list = filtered();
+      const rows = buildRows(list);
+      const tot = {vals:{ahmed:0,abdalla:0,ayman:0,aly:0,general:0}, revenue:0, total:0, net:0};
+      rows.forEach(r => {
+        PEOPLE.forEach(p => tot.vals[p.key]+=r.vals[p.key]);
+        tot.revenue += r.revenue; tot.total += r.total;
+      });
+      tot.net = tot.revenue - tot.total;
+      state.rows = rows; state.totals = tot;
+
+      const th = (c,cls='') => `<th class="${cls}" style="background:${c.head}">${c.label}</th>`;
+      const td = (v,bg,extra='') => `<td style="background:${bg}" class="${v<0?'neg':''} ${extra}">${num(v)}</td>`;
+
+      let html = `<thead><tr>
+        <th class="left" style="background:#f1f5f9">📅 Date</th>
+        <th class="left" style="background:#f1f5f9">📄 Description</th>
+        ${PEOPLE.map(p=>th(p)).join('')}${th(TOTAL_COL)}${th(REV_COL)}${th(NET_COL)}
+        <th class="dots-col" style="background:#f1f5f9;width:44px"></th></tr></thead><tbody>`;
+
+      if(!rows.length){
+        html += `<tr><td colspan="11" class="empty">No transactions found.</td></tr>`;
+      }
+      rows.forEach((r,i) => {
+        html += `<tr>
+          <td class="left" style="background:#fff">${esc(r.label)}</td>
+          <td class="left desc" style="background:#fff">${r.descs.length?esc(r.descs.join(' / ')):'-'}</td>
+          ${PEOPLE.map(p=>td(r.vals[p.key],p.body)).join('')}
+          ${td(r.total,TOTAL_COL.body)}${td(r.revenue,REV_COL.body)}${td(r.net,NET_COL.body)}
+          <td class="dots-col" style="background:#fff"><button class="dots" data-i="${i}" title="Details">⋯</button></td></tr>`;
+      });
+      html += `<tr class="total"><td class="left">Total</td><td></td>
+        ${PEOPLE.map(p=>`<td class="${tot.vals[p.key]<0?'neg':''}">${num(tot.vals[p.key])}</td>`).join('')}
+        <td>${num(tot.total)}</td><td>${num(tot.revenue)}</td><td class="${tot.net<0?'neg':''}">${num(tot.net)}</td><td class="dots-col"></td></tr></tbody>`;
+      $('tbl').innerHTML = html;
+      $('tbl').querySelectorAll('.dots').forEach(b => b.addEventListener('click', () => openRow(Number(b.dataset.i))));
+      renderBottom(tot);
+    }
+
+    function renderBottom(tot){
+      const recent = [...state.tx].sort((a,b)=> a.transaction_date<b.transaction_date?1:a.transaction_date>b.transaction_date?-1:b.id-a.id).slice(0,5);
+      const recentHtml = recent.length ? recent.map(t => {
+        const rev = t.category==='revenue';
+        return `<li><span class="d">${fmt(t.transaction_date)}</span><span class="t">${esc((t.details||'').trim()||LABEL[t.category])}</span><span class="a ${rev?'pos':'neg'}">${rev?'+':'-'}${num(t.amount)}</span></li>`;
+      }).join('') : '<li style="justify-content:center;color:#94a3b8">No transactions yet.</li>';
+
+      $('bottom').innerHTML = `
+        <div class="card"><h3>👤 Individual Totals</h3>
+          <div class="mini-row">${PEOPLE.map(p=>`<div class="mini" style="background:${p.body}"><small style="background:${p.head};padding:6px;border-radius:6px">${p.label}</small><b>${num(tot.vals[p.key])}</b></div>`).join('')}</div>
+        </div>
+        <div class="card"><h3>🧮 Quick Summary</h3>
+          <div class="mini-row">
+            <div class="mini big" style="background:#eff6ff"><small>Total Income</small><b style="color:#1d4ed8">${egp(tot.revenue)}</b></div>
+            <div class="mini big" style="background:#fef2f2"><small>Total Expenses</small><b style="color:#b91c1c">${egp(tot.total)}</b></div>
+            <div class="mini big" style="background:#f0fdf4"><small>Net Profit</small><b style="color:#15803d">${egp(tot.net)}</b></div>
+          </div>
+        </div>
+        <div class="card"><h3>🕒 Recent Transactions <button id="viewAll" class="no-print">View All</button></h3>
+          <ul class="recent">${recentHtml}</ul>
+        </div>`;
+      $('viewAll').addEventListener('click', () => {
+        state.group = 'tx'; $('groupSel').value = 'tx'; renderTable();
+        $('tbl').scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    }
+
+    // ===== Modals =====
+    function openModal(html){ $('modalRoot').innerHTML = `<div class="overlay" id="ov">${html}</div>`; $('ov').addEventListener('mousedown', e => { if(e.target.id==='ov') closeModal(); }); }
+    function closeModal(){ $('modalRoot').innerHTML = ''; }
+
+    function openRow(i){
+      const r = state.rows[i];
+      const lines = r.txs.length ? r.txs.map(t => {
+        const rev = t.category==='revenue';
+        return `<div class="tx-line"><div class="grow"><b>${fmt(t.transaction_date)}</b> · ${LABEL[t.category]}<div class="sub">${esc(t.details||'-')}</div></div>
+          <div class="amt ${rev?'pos':'neg'}">${rev?'+':'-'}${num(t.amount)}</div>
+          <button class="btn danger" style="height:34px;padding:0 12px" data-id="${t.id}">Delete</button></div>`;
+      }).join('') : '<div class="empty">No transactions on this row.</div>';
+      openModal(`<div class="modal"><div class="m-head"><h3>${esc(r.label)}</h3><button class="x" onclick="closeModal()">×</button></div>
+        <div class="m-body" style="gap:0">${lines}</div></div>`);
+      $('modalRoot').querySelectorAll('button[data-id]').forEach(b => b.addEventListener('click', async () => {
+        if(!confirm('Delete this transaction?')) return;
+        try{
+          const res = await fetch('/api/company/'+b.dataset.id, {method:'DELETE'});
+          const d = await res.json();
+          if(!res.ok||!d.success) throw new Error(d.message||'Delete failed');
+          closeModal(); toast('Transaction deleted.'); load();
+        }catch(e){ toast(e.message,true); }
+      }));
+    }
+
+    function openAdd(){
+      state.pick = null;
+      const keys = [...PEOPLE.map(p=>p.key),'revenue'];
+      openModal(`<div class="modal"><div class="m-head"><h3>Add Transaction</h3><button class="x" onclick="closeModal()">×</button></div>
+        <div class="m-body">
+          <label>Amount (EGP)<input id="fAmount" type="number" min="0" step="0.01" placeholder="0.00"></label>
+          <label>Date<input id="fDate" type="date" value="${todayStr()}"></label>
+          <label>Description (optional)<input id="fDesc" type="text" maxlength="500" placeholder="e.g. Monthly salary"></label>
+          <div class="lbl">Add to <small>Drag one item into the box below (or just click it)</small></div>
+          <div class="chips" id="chips">${keys.map(k=>`<div class="chip" draggable="true" data-key="${k}" style="background:${CHIP_COLOR[k]}">⠿ ${k==='revenue'?'⬆ ':''}${LABEL[k]}</div>`).join('')}</div>
+          <div class="dz" id="dz">Drop here</div>
+        </div>
+        <div class="m-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="saveBtn">Save</button></div></div>`);
+
+      const dz = $('dz');
+      function pick(k){
+        if(!LABEL[k]) return;
+        state.pick = k;
+        dz.className = 'dz filled';
+        dz.innerHTML = `<span class="chip" style="background:${CHIP_COLOR[k]};cursor:default">${k==='revenue'?'⬆ ':''}${LABEL[k]}</span><button class="clear" title="Clear">×</button>`;
+        dz.querySelector('.clear').addEventListener('click', () => { state.pick=null; dz.className='dz'; dz.textContent='Drop here'; markChips(); });
+        markChips();
+      }
+      function markChips(){ document.querySelectorAll('#chips .chip').forEach(c => c.classList.toggle('picked', c.dataset.key===state.pick)); }
+      document.querySelectorAll('#chips .chip').forEach(c => {
+        c.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', c.dataset.key); e.dataTransfer.effectAllowed = 'move'; });
+        c.addEventListener('click', () => pick(c.dataset.key));
+      });
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+      dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+      dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); pick(e.dataTransfer.getData('text/plain')); });
+
+      $('saveBtn').addEventListener('click', async () => {
+        const amount = Number($('fAmount').value), date = $('fDate').value, details = $('fDesc').value.trim();
+        if(!Number.isFinite(amount) || amount<=0) return toast('Enter a valid amount.', true);
+        if(!date) return toast('Choose a date.', true);
+        if(!state.pick) return toast('Drag an item into the "Add to" box.', true);
+        try{
+          const res = await fetch('/api/company', {method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({category:state.pick, transaction_date:date, amount, details})});
+          const d = await res.json();
+          if(!res.ok||!d.success) throw new Error(d.message||'Save failed');
+          closeModal(); toast('Transaction added.');
+          if(date<state.from || date>state.to){ setMonth(date.slice(0,7)); }
+          load();
+        }catch(e){ toast(e.message,true); }
+      });
+    }
+
+    // ===== Excel export (same table as displayed) =====
+    async function exportExcel(){
+      if(!window.ExcelJS) return toast('Excel library did not load. Check your internet connection.', true);
+      const rows = state.rows, tot = state.totals;
+      if(!tot) return;
+      const cols = [...PEOPLE, TOTAL_COL, REV_COL, NET_COL];
+      const argb = h => 'FF' + h.replace('#','').toUpperCase();
+      const border = {top:{style:'thin',color:{argb:'FFD9DEE7'}},left:{style:'thin',color:{argb:'FFD9DEE7'}},bottom:{style:'thin',color:{argb:'FFD9DEE7'}},right:{style:'thin',color:{argb:'FFD9DEE7'}}};
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Company Finance', {views:[{state:'frozen', ySplit:4}]});
+      ws.columns = [{width:18},{width:38},...cols.map(()=>({width:17}))];
+
+      ws.mergeCells('A1:J1'); ws.getCell('A1').value = 'Company Finance';
+      ws.getCell('A1').font = {bold:true,size:16,color:{argb:'FF0F172A'}};
+      ws.mergeCells('A2:J2'); ws.getCell('A2').value = `Period: ${fmt(state.from)} to ${fmt(state.to)}`;
+      ws.getCell('A2').font = {size:10,color:{argb:'FF64748B'}};
+
+      const head = ws.getRow(4);
+      head.values = ['Date','Description',...cols.map(c=>c.label)];
+      head.height = 24;
+      head.eachCell((cell,n) => {
+        cell.font = {bold:true,color:{argb:'FF1E293B'}};
+        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb: n<=2 ? 'FFF1F5F9' : argb(cols[n-3].head)}};
+        cell.alignment = {horizontal: n<=2?'left':'center', vertical:'middle'};
+        cell.border = border;
+      });
+
+      const setNum = (cell,v,bg,bold) => {
+        cell.value = v;
+        cell.numFmt = Number.isInteger(v) ? '#,##0' : '#,##0.00';
+        cell.alignment = {horizontal:'center',vertical:'middle'};
+        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:argb(bg)}};
+        cell.font = {bold:!!bold, color:{argb: v<0 ? 'FFDC2626' : 'FF1E293B'}};
+        cell.border = border;
+      };
+
+      rows.forEach(r => {
+        const row = ws.addRow([r.label, r.descs.length ? r.descs.join(' / ') : '-']);
+        row.getCell(1).border = border; row.getCell(2).border = border;
+        row.getCell(1).alignment = {horizontal:'left',vertical:'middle'};
+        row.getCell(2).alignment = {horizontal:'left',vertical:'middle',wrapText:true};
+        PEOPLE.forEach((p,i) => setNum(row.getCell(3+i), r.vals[p.key], p.body));
+        setNum(row.getCell(8), r.total, TOTAL_COL.body);
+        setNum(row.getCell(9), r.revenue, REV_COL.body);
+        setNum(row.getCell(10), r.net, NET_COL.body);
+      });
+
+      const totalRow = ws.addRow(['Total','']);
+      totalRow.height = 24;
+      [1,2].forEach(n => { const c = totalRow.getCell(n); c.font={bold:true}; c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFEAF2FF'}}; c.border=border; });
+      PEOPLE.forEach((p,i) => setNum(totalRow.getCell(3+i), tot.vals[p.key], '#eaf2ff', true));
+      setNum(totalRow.getCell(8), tot.total, '#eaf2ff', true);
+      setNum(totalRow.getCell(9), tot.revenue, '#eaf2ff', true);
+      setNum(totalRow.getCell(10), tot.net, '#eaf2ff', true);
+
+      const buf = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `company-finance-${state.from}_to_${state.to}.xlsx`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+
+    // ===== Init =====
+    function setMonth(ym){
+      state.month = ym;
+      const r = monthRange(ym);
+      state.from = r.from; state.to = r.to;
+      $('monthInput').value = ym; $('fromInput').value = r.from; $('toInput').value = r.to;
+    }
+
+    $('whoSel').innerHTML = '<option value="all">All Individuals</option>' + PEOPLE.map(p=>`<option value="${p.key}">${p.label}</option>`).join('');
+    const now = new Date();
+    setMonth(`${now.getFullYear()}-${pad(now.getMonth()+1)}`);
+
+    $('monthInput').addEventListener('change', e => { if(e.target.value){ setMonth(e.target.value); load(); } });
+    function rangeChanged(){
+      const f = $('fromInput').value, t = $('toInput').value;
+      if(!f || !t || t<f) return;
+      state.from = f; state.to = t; load();
+    }
+    $('fromInput').addEventListener('change', rangeChanged);
+    $('toInput').addEventListener('change', rangeChanged);
+    $('searchInput').addEventListener('input', e => { state.q = e.target.value; renderTable(); });
+    $('typeSel').addEventListener('change', e => { state.type = e.target.value; renderTable(); });
+    $('whoSel').addEventListener('change', e => { state.who = e.target.value; renderTable(); });
+    $('groupSel').addEventListener('change', e => { state.group = e.target.value; renderTable(); });
+    $('addBtn').addEventListener('click', openAdd);
+    $('exportBtn').addEventListener('click', () => exportExcel().catch(e => toast(e.message,true)));
+    document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+    load();
+  </script>
+</body>
+</html>
